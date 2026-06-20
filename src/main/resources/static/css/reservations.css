@@ -1,0 +1,14 @@
+/* reservations.css - reservation cards, statuses, actions */
+
+.reservation-card{ background:#fff; border-radius:8px; padding:1rem; margin-bottom:1rem; box-shadow:var(--shadow); display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:start; border-left:5px solid var(--accent-gold); }
+.reservation-info h3{ color:var(--accent-gold); margin-bottom:.5rem; }
+.reservation-info p{ color:var(--text-muted); margin:0.35rem 0; }
+
+.reservation-status{ padding:.45rem .75rem; border-radius:6px; font-weight:700; font-size:.9rem; text-align:center; }
+.status-pending{ background:#fff3cd; color:#856404; }
+.status-paid{ background:#eaf7ee; color:var(--success); }
+.status-cancelled{ background:#fff0f0; color:var(--danger); }
+
+.reservation-actions{ display:flex; flex-direction:column; gap:.5rem; }
+@media (max-width:768px){ .reservation-card{ grid-template-columns:1fr; } .reservation-actions{ flex-direction:row; } }
+

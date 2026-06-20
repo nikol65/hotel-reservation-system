@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Reservations - Hotel Reservation System</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/reservations.css}">
+    <link rel="stylesheet" th:href="@{/css/cancel-modal.css}">
+</head>
+<body>
+<header>
+    <div class="navbar">
+        <a th:href="@{/}" class="navbar-brand">🏨 Hotel Reservation System</a>
+
+        <nav>
+            <ul class="nav-menu">
+                <li><a th:href="@{/home}">Home</a></li>
+                <li><a th:href="@{/rooms}">Rooms</a></li>
+                <li><a th:href="@{/reservations}">My Reservations</a></li>
+                <li><a th:href="@{/payments}">My Payments</a></li>
+                <li><a th:href="@{/profile}">Profile</a></li>
+
+                <li th:if="${session.userRole == 'ADMIN'}"><span class="nav-divider"></span></li>
+                <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms}">Admin Rooms</a></li>
+                <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms/add}">Add Room</a></li>
+
+                <li>
+                    <form method="post" th:action="@{/logout}" style="display: inline;">
+                        <button type="submit" class="btn-logout">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="section">
+        <div class="container">
+            <h1 class="section-title">My Reservations</h1>
+
+            <div th:if="${successMessage}" class="alert alert-success">
+                <p th:text="${successMessage}"></p>
+            </div>
+
+            <div th:if="${errorMessage}" class="alert alert-danger">
+                <p th:text="${errorMessage}"></p>
+            </div>
+
+            <div th:if="${#lists.isEmpty(reservations)}" class="alert alert-info">
+                <p>
+                    You have no reservations yet.
+                    <a th:href="@{/rooms}">Browse rooms and make a reservation</a>
+                </p>
+            </div>
+
+            <div th:if="${!#lists.isEmpty(reservations)}">
+                <div th:each="reservation : ${reservations}" class="reservation-card">
+                    <div class="reservation-info">
+                        <h3>
+                            🏠 Room <span th:text="${reservation.roomNumber}">101</span>
+                        </h3>
+
+                        <p>
+                            <strong>📅 Check-In:</strong>
+                            <span th:text="${reservation.checkInDateTime}">2024-06-15 15:00</span>
+                        </p>
+
+                        <p>
+                            <strong>📅 Check-Out:</strong>
+                            <span th:text="${reservation.checkOutDateTime}">2024-06-20 11:00</span>
+                        </p>
+
+                        <p>
+                            <strong>💰 Total Price:</strong>
+                            <span style="color: var(--secondary-color); font-weight: bold;">
+                                $<span th:text="${reservation.totalPrice}">500</span>
+                            </span>
+                        </p>
+
+                        <p>
+                            <strong>📜 Reservation Status:</strong>
+                            <span th:text="${reservation.status.displayName}">
+</span>
+                        </p>
+
+                        <p>
+                            <strong>💳 Payment Status:</strong>
+                            <span class="reservation-status"
+                                  th:text="${reservation.paymentStatus != null ? reservation.paymentStatus : 'NOT PAID'}">
+                                NOT PAID
+                            </span>
+                        </p>
+                    </div>
+
+                    <div class="reservation-actions">
+                        <a th:if="${reservation.status.name() != 'CANCELLED'
+                                   and reservation.status.name() != 'AUTO_CANCELLED'
+                                   and (reservation.paymentStatus == null or reservation.paymentStatus.name() == 'PENDING')}"
+                           th:href="@{/payment/create/{id}(id=${reservation.id})}"
+                           class="btn btn-success">
+                            💳 Pay Now
+                        </a>
+
+                        <form th:if="${reservation.status.name() != 'CANCELLED'
+                                      and reservation.status.name() != 'AUTO_CANCELLED'}"
+                              method="post"
+                              th:action="@{/reservation/{id}/cancel(id=${reservation.id})}">
+                            <button type="button"
+                                    class="btn btn-danger"
+                                    style="width: 100%;"
+                                    onclick="openCancelModal(this.form)">
+                                Cancel Reservation
+                            </button>
+                        </form>
+
+                        <div th:if="${reservation.status.name() == 'AUTO_CANCELLED'}">
+                            <button class="btn btn-disabled" disabled style="width: 100%;">
+                                Automatically Cancelled
+                            </button>
+                        </div>
+
+                        <div th:if="${reservation.status.name() == 'CANCELLED'}">
+                            <button class="btn btn-disabled" disabled style="width: 100%;">
+                                Cancelled
+                            </button>
+                        </div>
+
+                        <a th:href="@{/reservation/{id}(id=${reservation.id})}"
+                           class="btn btn-info">
+                            📋 View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem; text-align: center;">
+                <a th:href="@{/home}" class="btn btn-secondary">← Back to Dashboard</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>About Us</h3>
+            <p>Hotel Reservation System is your premier destination for luxury accommodations and exceptional hospitality.</p>
+        </div>
+
+        <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a th:href="@{/}">Home</a></li>
+                <li><a th:href="@{/rooms}">Rooms</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h3>Contact</h3>
+            <p>📞 +1 (555) 123-4567</p>
+            <p>📧 info@hotelreservation.com</p>
+            <p>📍 123 Luxury Street, Premium City, PC 12345</p>
+        </div>
+
+        <div class="footer-section">
+            <h3>Follow Us</h3>
+            <ul>
+                <li><a href="#">Facebook</a></li>
+                <li><a href="#">Instagram</a></li>
+                <li><a href="#">Twitter</a></li>
+                <li><a href="#">LinkedIn</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2024 Hotel Reservation System. All rights reserved.</p>
+    </div>
+</footer>
+
+<div id="cancel-modal-overlay" class="cancel-modal-overlay" aria-hidden="true">
+    <div id="cancel-modal" class="cancel-modal" role="dialog" aria-modal="true" aria-labelledby="cancel-modal-title">
+        <h2 id="cancel-modal-title">Are you sure you want to cancel this reservation?</h2>
+
+        <div class="cancel-modal-actions">
+            <button type="button"
+                    class="btn btn-danger btn-modal-confirm"
+                    onclick="confirmCancellation()">
+                Yes, Cancel Reservation
+            </button>
+
+            <button type="button"
+                    class="btn btn-secondary btn-modal-close"
+                    onclick="closeCancelModal()">
+                No, Keep Reservation
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let cancelFormToSubmit = null;
+
+    function openCancelModal(form) {
+        cancelFormToSubmit = form;
+
+        const overlay = document.getElementById('cancel-modal-overlay');
+        if (!overlay) {
+            return;
+        }
+
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function confirmCancellation() {
+        if (!cancelFormToSubmit) {
+            closeCancelModal();
+            return;
+        }
+
+        const form = cancelFormToSubmit;
+
+        const overlay = document.getElementById('cancel-modal-overlay');
+        if (overlay) {
+            overlay.classList.remove('open');
+        }
+
+        document.body.style.overflow = '';
+        cancelFormToSubmit = null;
+
+        form.submit();
+    }
+
+    function closeCancelModal() {
+        const overlay = document.getElementById('cancel-modal-overlay');
+        if (overlay) {
+            overlay.classList.remove('open');
+        }
+
+        document.body.style.overflow = '';
+        cancelFormToSubmit = null;
+    }
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            closeCancelModal();
+        }
+    });
+</script>
+
+</body>
+</html>

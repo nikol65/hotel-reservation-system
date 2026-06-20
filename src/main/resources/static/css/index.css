@@ -1,0 +1,23 @@
+/* index.css - landing page hero, highlights and CTA */
+
+.hero{ position:relative; background-image:url('../images/hotel-hero.jpg'); background-size:cover; background-position:center; min-height:80vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:2rem; color:#fff; overflow:hidden; }
+.hero::before{ content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.45)); pointer-events:none; }
+.hero-content{ position:relative; z-index:2; max-width:1000px; padding:2rem; }
+.hero-content h1{ font-size:3rem; margin-bottom:1rem; letter-spacing:1px; }
+.hero-subtitle{ font-size:1.2rem; color:rgba(255,255,255,.95); margin-bottom:1.25rem; }
+.hero-buttons{ display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+
+.description-section{ background:#fff; border-radius:8px; padding:2rem; text-align:center; }
+.room-highlights{ margin:2.25rem 0; }
+.highlight-grid{ display:grid; gap:1rem; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); }
+.highlight-card{ background:#fff; border-radius:8px; overflow:hidden; box-shadow:var(--shadow); transition:all .25s ease; }
+.highlight-card img{ width:100%; height:200px; object-fit:cover; display:block; }
+.highlight-body{ padding:1rem; }
+.highlight-body h3{ color:var(--accent-gold); margin-bottom:.5rem; }
+
+.services{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; }
+.service-item{ background:#fff; padding:1.25rem; border-radius:8px; text-align:center; box-shadow:var(--shadow); }
+.service-icon{ font-size:2rem; color:var(--accent-gold); margin-bottom:.6rem; }
+
+@media (max-width:768px){ .hero-content h1{ font-size:2.2rem; } }
+

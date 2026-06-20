@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process Payment - Hotel Reservation System</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/payments.css}">
+    <link rel="stylesheet" th:href="@{/css/forms.css}">
+</head>
+<body>
+<header>
+    <div class="navbar">
+        <a th:href="@{/}" class="navbar-brand">🏨 Hotel Reservation System</a>
+        <nav>
+            <ul class="nav-menu">
+                <li><a th:href="@{/home}">Home</a></li>
+                <li><a th:href="@{/rooms}">Rooms</a></li>
+                <li><a th:href="@{/reservations}">My Reservations</a></li>
+                <li><a th:href="@{/payments}">My Payments</a></li>
+                <li><a th:href="@{/profile}">Profile</a></li>
+                <li th:if="${session.userRole == 'ADMIN'}"><span class="nav-divider"></span></li>
+                <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms}">Admin Rooms</a></li>
+                <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms/add}">Add Room</a></li>
+                <li>
+                    <form method="post" th:action="@{/logout}" style="display: inline;">
+                        <button type="submit" class="btn-logout">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="section">
+        <div class="container">
+            <h1 class="section-title">Process Payment</h1>
+
+            <div th:if="${successMessage}" class="alert alert-success">
+                <p th:text="${successMessage}"></p>
+            </div>
+
+            <div th:if="${errorMessage}" class="alert alert-danger">
+                <p th:text="${errorMessage}"></p>
+            </div>
+
+            <div th:if="${reservation.status.name() == 'CANCELLED' or reservation.status.name() == 'AUTO_CANCELLED'}"
+                 class="alert alert-danger">
+                <p>
+                    This reservation cannot be paid because it has been cancelled.
+                </p>
+            </div>
+
+            <div class="grid grid-2">
+                <div>
+                    <div class="room-details">
+                        <h3>📋 Reservation Details</h3>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Room Number:</span>
+                            <span class="detail-value" th:text="${reservation.roomNumber}">101</span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Check-In:</span>
+                            <span class="detail-value" th:text="${reservation.checkInDateTime}">2024-06-15 15:00</span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Check-Out:</span>
+                            <span class="detail-value" th:text="${reservation.checkOutDateTime}">2024-06-20 11:00</span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Reservation Status:</span>
+                            <span class="detail-value" th:text="${reservation.status}">PENDING</span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Total Amount:</span>
+                            <span class="detail-value" style="font-weight: bold; color: var(--secondary-color); font-size: 1.1rem;">
+                                $<span th:text="${reservation.totalPrice}">500</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="form-container" style="margin: 0;">
+                        <h3 style="margin-bottom: 1.5rem;">💳 Payment Information</h3>
+
+                        <form th:if="${reservation.status.name() != 'CANCELLED' and reservation.status.name() != 'AUTO_CANCELLED'}"
+                              th:action="@{/payment/create/{reservationId}(reservationId=${reservation.id})}"
+                              method="post"
+                              th:object="${paymentCreateRequest}">
+
+                            <div class="form-group">
+                                <label for="paymentType">Payment Type</label>
+                                <select id="paymentType"
+                                        th:field="*{paymentType}"
+                                        onchange="updatePaymentMethods()"
+                                        required>
+                                    <option value="">-- Select Payment Type --</option>
+                                    <option value="ONLINE">Online Payment</option>
+                                    <option value="AT_HOTEL">Pay at Hotel</option>
+                                </select>
+                                <span th:if="${#fields.hasErrors('paymentType')}"
+                                      class="form-error"
+                                      th:errors="*{paymentType}">
+                                </span>
+
+                                <small style="display: block; margin-top: 0.5rem; color: #999;">
+                                    <strong>Online:</strong> Use Bank Transfer<br>
+                                    <strong>At Hotel:</strong> Use Card or Cash
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="paymentMethod">Payment Method</label>
+                                <select id="paymentMethod"
+                                        th:field="*{paymentMethod}"
+                                        required>
+                                    <option value="">-- Select Payment Method --</option>
+                                </select>
+                                <span th:if="${#fields.hasErrors('paymentMethod')}"
+                                      class="form-error"
+                                      th:errors="*{paymentMethod}">
+                                </span>
+                            </div>
+
+                            <div style="background-color: #fafafa; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; border-left: 4px solid var(--secondary-color);">
+                                <p style="margin: 0; font-size: 0.95rem;">
+                                    <strong>Amount Due:</strong><br>
+                                    <span style="font-size: 1.3rem; color: var(--secondary-color);">
+                                        $<span th:text="${reservation.totalPrice}">500</span>
+                                    </span>
+                                </p>
+                            </div>
+
+                            <button type="submit" class="btn btn-success" style="width: 100%; padding: 1rem; font-size: 1rem;">
+                                💳 Pay $<span th:text="${reservation.totalPrice}">500</span>
+                            </button>
+
+                            <a th:href="@{/reservations}" class="btn btn-secondary" style="width: 100%; text-align: center; margin-top: 0.5rem;">
+                                Cancel
+                            </a>
+                        </form>
+
+                        <div th:if="${reservation.status.name() == 'CANCELLED' or reservation.status.name() == 'AUTO_CANCELLED'}">
+                            <a th:href="@{/reservations}" class="btn btn-secondary" style="width: 100%; text-align: center;">
+                                Back to Reservations
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem; background-color: #f0f8ff; border-left: 4px solid var(--info-color); padding: 1.5rem; border-radius: 4px;">
+                <h4 style="color: var(--info-color); margin-bottom: 0.5rem;">ℹ️ Payment Information</h4>
+                <ul style="margin: 0; padding-left: 1.5rem; color: #666;">
+                    <li>Your payment is secure and encrypted with SSL</li>
+                    <li>Payment receipt will be available in your account</li>
+                    <li>For questions, contact our support team at info@hotelreservation.com</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>About Us</h3>
+            <p>Hotel Reservation System is your premier destination for luxury accommodations and exceptional hospitality.</p>
+        </div>
+        <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a th:href="@{/}">Home</a></li>
+                <li><a th:href="@{/rooms}">Rooms</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Contact</h3>
+            <p>📞 +1 (555) 123-4567</p>
+            <p>📧 info@hotelreservation.com</p>
+            <p>📍 123 Luxury Street, Premium City, PC 12345</p>
+        </div>
+        <div class="footer-section">
+            <h3>Follow Us</h3>
+            <ul>
+                <li><a href="#">Facebook</a></li>
+                <li><a href="#">Instagram</a></li>
+                <li><a href="#">Twitter</a></li>
+                <li><a href="#">LinkedIn</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2024 Hotel Reservation System. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+    function updatePaymentMethods() {
+        const paymentType = document.getElementById('paymentType');
+        const paymentMethod = document.getElementById('paymentMethod');
+
+        if (!paymentType || !paymentMethod) {
+            return;
+        }
+
+        paymentMethod.innerHTML = '<option value="">-- Select Payment Method --</option>';
+
+        if (paymentType.value === 'ONLINE') {
+            paymentMethod.innerHTML += '<option value="BANK_TRANSFER">Bank Transfer</option>';
+        } else if (paymentType.value === 'AT_HOTEL') {
+            paymentMethod.innerHTML += '<option value="CARD">Credit/Debit Card</option>';
+            paymentMethod.innerHTML += '<option value="CASH">Cash</option>';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        updatePaymentMethods();
+    });
+</script>
+</body>
+</html>

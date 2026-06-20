@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Room - Hotel Reservation System</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/forms.css}">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header>
+        <div class="navbar">
+            <a href="/" class="navbar-brand">🏨 Hotel Reservation System</a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a th:href="@{/home}">Home</a></li>
+                    <li><a th:href="@{/rooms}">Rooms</a></li>
+                    <li><a th:href="@{/reservations}">My Reservations</a></li>
+                    <li><a th:href="@{/payments}">My Payments</a></li>
+                    <li><a th:href="@{/profile}">Profile</a></li>
+                    <li th:if="${session.userRole == 'ADMIN'}"><span class="nav-divider"></span></li>
+                    <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms}">Admin Rooms</a></li>
+                    <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms/add}">Add Room</a></li>
+                    <li>
+                        <form method="post" th:action="@{/logout}" style="display: inline;">
+                            <button type="submit" class="btn-logout">Logout</button>
+                        </form>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <div class="form-container">
+                    <h1 class="text-center mb-2">Edit Room</h1>
+                    <p class="text-center text-muted mb-3">Update room details and information</p>
+
+                    <!-- Success Message -->
+                    <div th:if="${successMessage}" class="alert alert-success">
+                        <p th:text="${successMessage}"></p>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div th:if="${errorMessage}" class="alert alert-danger">
+                        <p th:text="${errorMessage}"></p>
+                    </div>
+
+                    <!-- Edit Room Form -->
+                    <!-- expects model attribute: roomEditRequest -->
+                    <form th:action="@{/admin/rooms/{id}/edit(id=${roomId})}" method="post" th:object="${roomEditRequest}">
+                        <div class="form-two-col">
+                            <div class="form-group">
+                                <label for="roomNumber">Room Number</label>
+                                <input
+                                    type="text"
+                                    id="roomNumber"
+                                    th:field="*{roomNumber}"
+                                    placeholder="e.g., 101"
+                                    required>
+                                <span th:if="${#fields.hasErrors('roomNumber')}" class="form-error" th:errors="*{roomNumber}"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="roomType">Room Type</label>
+                                <select id="roomType" th:field="*{roomType}" required>
+                                    <option value="">-- Select Room Type --</option>
+                                    <option value="SINGLE">Single Room</option>
+                                    <option value="DOUBLE">Double Room</option>
+                                    <option value="SUITE">Suite</option>
+                                    <option value="APARTMENT">Luxury Apartment</option>
+                                    <option value="PENTHOUSE">Penthouse</option>
+                                </select>
+                                <span th:if="${#fields.hasErrors('roomType')}" class="form-error" th:errors="*{roomType}"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-two-col">
+                            <div class="form-group">
+                                <label for="pricePerNight">Price per Night ($)</label>
+                                <input
+                                    type="number"
+                                    id="pricePerNight"
+                                    th:field="*{pricePerNight}"
+                                    step="0.01"
+                                    min="0"
+                                    placeholder="e.g., 99.99"
+                                    required>
+                                <span th:if="${#fields.hasErrors('pricePerNight')}" class="form-error" th:errors="*{pricePerNight}"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="capacity">Capacity (Guests)</label>
+                                <input
+                                    type="number"
+                                    id="capacity"
+                                    th:field="*{capacity}"
+                                    min="1"
+                                    max="10"
+                                    placeholder="e.g., 2"
+                                    required>
+                                <span th:if="${#fields.hasErrors('capacity')}" class="form-error" th:errors="*{capacity}"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-two-col">
+                            <div class="form-group">
+                                <label for="floor">Floor</label>
+                                <input
+                                    type="number"
+                                    id="floor"
+                                    th:field="*{floor}"
+                                    min="1"
+                                    placeholder="e.g., 1"
+                                    required>
+                                <span th:if="${#fields.hasErrors('floor')}" class="form-error" th:errors="*{floor}"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="roomStatus">Room Status</label>
+                                <select id="roomStatus" th:field="*{roomStatus}" required>
+                                    <option value="">-- Select Status --</option>
+                                    <option value="AVAILABLE">Available</option>
+                                    <option value="OCCUPIED">Occupied</option>
+                                    <option value="MAINTENANCE">Maintenance</option>
+                                    <option value="RESERVED">Reserved</option>
+                                </select>
+                                <span th:if="${#fields.hasErrors('roomStatus')}" class="form-error" th:errors="*{roomStatus}"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea
+                                id="description"
+                                th:field="*{description}"
+                                placeholder="Describe the room features and amenities..."
+                                required></textarea>
+                            <span th:if="${#fields.hasErrors('description')}" class="form-error" th:errors="*{description}"></span>
+                        </div>
+
+                        <div style="display: flex; gap: 1rem; justify-content: center;">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <a th:href="@{/admin/rooms}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p>Hotel Reservation System is your premier destination for luxury accommodations and exceptional hospitality.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a th:href="@{/}">Home</a></li>
+                    <li><a th:href="@{/rooms}">Rooms</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>📞 +1 (555) 123-4567</p>
+                <p>📧 info@hotelreservation.com</p>
+                <p>📍 123 Luxury Street, Premium City, PC 12345</p>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Hotel Reservation System. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
+

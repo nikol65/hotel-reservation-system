@@ -1,0 +1,103 @@
+/* Cancel Reservation Modal Styles */
+:root{
+    --cancel-gold: #d4af37;
+    --cancel-black: #0b0b0b;
+    --cancel-white: #ffffff;
+}
+
+/* Overlay */
+.cancel-modal-overlay{
+    position: fixed;
+    inset: 0; /* top:0;right:0;bottom:0;left:0; */
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 220ms ease, visibility 220ms ease;
+    z-index: 1200;
+}
+.cancel-modal-overlay.open{
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Modal box */
+.cancel-modal{
+    background: linear-gradient(180deg, rgba(17,17,17,1) 0%, rgba(9,9,9,1) 100%);
+    color: var(--cancel-white);
+    width: 92%;
+    max-width: 540px;
+    border-radius: 12px;
+    padding: 1.35rem 1.25rem;
+    box-shadow: 0 10px 30px rgba(2,2,2,0.6), 0 2px 6px rgba(0,0,0,0.4);
+    transform: translateY(-6px);
+    transition: transform 220ms ease, opacity 220ms ease;
+    opacity: 0;
+}
+.cancel-modal-overlay.open .cancel-modal{
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.cancel-modal h2{
+    margin: 0 0 0.75rem 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--cancel-white);
+    text-align: left;
+}
+
+.cancel-modal-actions{
+    display: flex;
+    gap: 0.6rem;
+    justify-content: flex-end;
+    margin-top: 0.75rem;
+}
+
+.btn-modal-confirm,
+.btn-modal-close{
+    cursor: pointer;
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 2px solid transparent;
+}
+
+.btn-modal-confirm{
+    background: var(--cancel-gold);
+    color: #0b0b0b;
+    border-color: rgba(0,0,0,0.15);
+    box-shadow: 0 6px 18px rgba(212,175,55,0.12);
+}
+
+.btn-modal-confirm:hover{
+    filter: brightness(0.98);
+    transform: translateY(-1px);
+}
+
+.btn-modal-close{
+    background: transparent;
+    color: var(--cancel-white);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.btn-modal-close:hover{
+    background: rgba(255,255,255,0.03);
+}
+
+/* Responsive / small screens spacing */
+@media (max-width:420px){
+    .cancel-modal{
+        padding: 1rem;
+        border-radius: 10px;
+    }
+    .cancel-modal-actions{flex-direction:column-reverse; align-items:stretch}
+    .btn-modal-confirm, .btn-modal-close{width:100%}
+}
+
+/* Subtle entrance animation for accessibility */
+.cancel-modal{will-change:transform,opacity}
+

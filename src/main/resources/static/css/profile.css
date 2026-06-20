@@ -1,0 +1,11 @@
+/* profile.css - user profile card and edit form styles */
+
+.profile-box{ background:#fff; border-radius:8px; padding:1.5rem; box-shadow:var(--shadow); }
+.profile-item{ display:flex; justify-content:space-between; padding:.75rem 0; border-bottom:1px solid var(--border); }
+.profile-item:last-child{ border-bottom:none; }
+.profile-label{ font-weight:700; color:var(--text-dark); }
+.profile-value{ color:var(--text-muted); }
+.profile-avatar{ width:96px; height:96px; border-radius:50%; object-fit:cover; border:4px solid rgba(212,175,55,.12); }
+
+.profile-actions{ display:flex; gap:.75rem; justify-content:flex-end; margin-top:1rem; }
+

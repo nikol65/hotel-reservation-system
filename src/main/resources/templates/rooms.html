@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Rooms - Hotel Reservation System</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/rooms.css}">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header>
+        <div class="navbar">
+            <a href="/" class="navbar-brand">🏨 Hotel Reservation System</a>
+            <nav>
+                <ul class="nav-menu">
+                    <li th:if="${session.userId == null}"><a th:href="@{/}">Home</a></li>
+                    <li th:if="${session.userId == null}"><a th:href="@{/rooms}">Rooms</a></li>
+                    <li th:if="${session.userId == null}"><a th:href="@{/login}">Login</a></li>
+                    <li th:if="${session.userId == null}"><a th:href="@{/register}">Register</a></li>
+                    <li th:if="${session.userId != null}"><a th:href="@{/home}">Home</a></li>
+                    <li th:if="${session.userId != null}"><a th:href="@{/rooms}">Rooms</a></li>
+                    <li th:if="${session.userId != null}"><a th:href="@{/reservations}">My Reservations</a></li>
+                    <li th:if="${session.userId != null}"><a th:href="@{/payments}">My Payments</a></li>
+                    <li th:if="${session.userId != null}"><a th:href="@{/profile}">Profile</a></li>
+                    <li th:if="${session.userRole == 'ADMIN'}"><span class="nav-divider"></span></li>
+                    <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms}">Admin Rooms</a></li>
+                    <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms/add}">Add Room</a></li>
+                    <li th:if="${session.userId != null}">
+                        <form method="post" th:action="@{/logout}" style="display: inline;">
+                            <button type="submit" class="btn-logout">Logout</button>
+                        </form>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <h1 class="section-title">Our Luxury Rooms</h1>
+
+                <p class="text-center text-muted mb-3" style="font-size: 1.1rem;">Discover our carefully designed rooms offering the utmost comfort and luxury.</p>
+
+                <!-- expects model attribute: rooms -->
+                <div th:if="${#lists.isEmpty(rooms)}" class="alert alert-info">
+                    <p>No rooms available at the moment. Please check back later.</p>
+                </div>
+
+                <div th:if="${!#lists.isEmpty(rooms)}" class="grid grid-3">
+                    <!-- Room Card for each room -->
+                    <div th:each="room : ${rooms}" class="card">
+                        <img th:if="${room.roomType.name() == 'SINGLE'}"
+                             th:src="@{/images/room-single.jpg}"
+                             alt="Single Room"
+                             class="card-image">
+
+                        <img th:if="${room.roomType.name() == 'DOUBLE'}"
+                             th:src="@{/images/room-double.jpg}"
+                             alt="Double Room"
+                             class="card-image">
+
+                        <img th:if="${room.roomType.name() == 'APARTMENT'}"
+                             th:src="@{/images/room-apartment.jpg}"
+                             alt="Apartment"
+                             class="card-image">
+
+                        <div class="card-body">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                                <div>
+                                    <h2 th:text="'Room ' + ${room.roomNumber}" style="font-size: 1.3rem; margin-bottom: 0.3rem;">Room 101</h2>
+                                    <p class="text-muted" th:text="${room.roomType}">Single Room</p>
+                                </div>
+                                <span
+                                    class="reservation-status"
+                                    th:classappend="${room.roomStatus == 'AVAILABLE' ? 'status-active' : 'status-pending'}"
+                                    th:text="${room.roomStatus}">
+                                    AVAILABLE
+                                </span>
+                            </div>
+
+                            <div class="detail-row">
+                                <span class="detail-label">Type:</span>
+                                <span class="detail-value" th:text="${room.roomType}">Single</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Price per Night:</span>
+                                <span class="detail-value" style="font-weight: bold; color: var(--secondary-color);">$<span th:text="${room.pricePerNight}">100</span></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Capacity:</span>
+                                <span class="detail-value" th:text="${room.capacity} + ' guests'">2 guests</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Floor:</span>
+                                <span class="detail-value" th:text="${room.floor}">3</span>
+                            </div>
+                            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e0e0e0;">
+                                <p class="text-muted" th:text="${room.description}">This is a beautiful room with modern amenities.</p>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <a
+                                th:if="${session.userId != null}"
+                                th:href="@{/reservation/create/{id}(id=${room.id})}"
+                                th:classappend="${room.roomStatus != 'AVAILABLE' ? 'disabled' : ''}"
+                                class="btn btn-primary"
+                                th:disabled="${room.roomStatus != 'AVAILABLE'}">
+                                Reserve Now
+                            </a>
+                            <a
+                                th:if="${session.userId == null}"
+                                th:href="@{/login}"
+                                class="btn btn-primary">
+                                Login to Reserve
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p>Hotel Reservation System is your premier destination for luxury accommodations and exceptional hospitality.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a th:href="@{/}">Home</a></li>
+                    <li><a th:href="@{/rooms}">Rooms</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>📞 +1 (555) 123-4567</p>
+                <p>📧 info@hotelreservation.com</p>
+                <p>📍 123 Luxury Street, Premium City, PC 12345</p>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Hotel Reservation System. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
+

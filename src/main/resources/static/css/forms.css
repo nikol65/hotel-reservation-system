@@ -1,0 +1,30 @@
+/* forms.css - centered form cards, inputs, labels, validation */
+
+.form-page{ padding:3rem 0; display:flex; align-items:center; justify-content:center; }
+.form-card{ width:100%; max-width:700px; margin:0 auto; }
+.form-container{ padding:2rem; }
+
+.form-group label{ display:block; margin-bottom:.5rem; font-weight:700; color:var(--text-dark); }
+.form-group input, .form-group select, .form-group textarea{ padding:.75rem; border:1px solid var(--border); border-radius:6px; font-size:1rem; }
+.form-actions{ display:flex; gap:.75rem; justify-content:flex-end; margin-top:1rem; }
+.form-actions .btn{ min-width:110px; }
+
+.validation-error{ color:var(--danger); font-size:.9rem; margin-top:.35rem; }
+
+/* smaller columns for profile/edit forms */
+.form-two-col{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+@media (max-width:600px){ .form-two-col{ grid-template-columns:1fr; } }
+
+.centered-note{ text-align:center; margin-top:1rem; color:var(--text-muted); }
+
+.is-invalid {
+    border: 2px solid #e74c3c !important;
+    background-color: #fff5f5;
+}
+
+.form-error {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+    display: block;
+}

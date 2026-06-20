@@ -1,0 +1,56 @@
+package bg.softuni.hotel_reservation_system.service;
+
+import bg.softuni.hotel_reservation_system.model.dto.room.RoomAddRequest;
+import bg.softuni.hotel_reservation_system.model.dto.room.RoomDto;
+import bg.softuni.hotel_reservation_system.model.entity.Room;
+import bg.softuni.hotel_reservation_system.model.enums.RoomStatus;
+import bg.softuni.hotel_reservation_system.model.mapper.room.RoomMapper;
+import bg.softuni.hotel_reservation_system.repository.RoomRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class RoomService {
+
+    private final RoomRepository roomRepository;
+
+    public RoomDto addRoom(RoomAddRequest roomAddRequest) {
+        if (roomRepository.existsByRoomNumber(roomAddRequest.getRoomNumber())) {
+            throw new RuntimeException("Room number already exists");
+        }
+        Room entity = RoomMapper.toRoomEntity(roomAddRequest);
+        Room updatedRoom = roomRepository.save(entity);
+        return RoomMapper.toRoomDto(updatedRoom);
+    }
+
+    public List<RoomDto> findAllRooms() {
+        List<Room> rooms = roomRepository.findAll();
+        return rooms.stream().map(RoomMapper::toRoomDto).toList();
+    }
+
+    public RoomDto findRoomById(UUID id) {
+        Room room = roomRepository.findById(id).orElseThrow(() ->
+                new RuntimeException("Room not found"));
+        return RoomMapper.toRoomDto(room);
+    }
+
+    public RoomDto updateRoom(UUID id, RoomAddRequest request) {
+        Room room = roomRepository.findById(id).orElseThrow(() ->
+                new RuntimeException("Room not found"));
+        RoomMapper.updateRoomFromRequest(request, room);
+        Room updatedRoom = roomRepository.save(room);
+        return RoomMapper.toRoomDto(updatedRoom);
+    }
+
+    public RoomDto deactivateRoom(UUID id) {
+        Room room = roomRepository.findById(id).orElseThrow(() ->
+                new RuntimeException("Room not found"));
+        room.setRoomStatus(RoomStatus.INACTIVE);
+        Room updatedRoom = roomRepository.save(room);
+        return RoomMapper.toRoomDto(updatedRoom);
+    }
+}

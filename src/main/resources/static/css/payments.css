@@ -1,0 +1,64 @@
+/* payments.css - payment cards and status badges */
+
+.payment-card{ background:#fff; border-radius:8px; padding:1rem; margin-bottom:1rem; box-shadow:var(--shadow); display:flex; justify-content:space-between; align-items:center; }
+.payment-info{ display:flex; gap:.75rem; align-items:center; }
+.payment-amount{ font-weight:800; color:var(--accent-gold); }
+.payment-status{ padding:.35rem .6rem; border-radius:6px; font-weight:700; }
+.payment-paid{ background:#eaf7ee; color:var(--success); }
+.payment-pending{ background:#fff3cd; color:#856404; }
+.payments-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2rem;
+    background: #ffffff;
+    box-shadow: var(--shadow);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.payments-table thead {
+    background: #1a1a1a;
+    color: #d4af37;
+}
+
+.payments-table th,
+.payments-table td {
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    text-align: left;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.payments-table tbody tr:nth-child(even) {
+    background: #f7f7f7;
+}
+
+.payments-table tbody tr:hover {
+    background: #fff8dc;
+}
+
+.status-paid {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    background: #d4edda;
+    color: #155724;
+    font-weight: 700;
+}
+
+.status-pending {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    background: #fff3cd;
+    color: #856404;
+    font-weight: 700;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 2rem;
+}
+
