@@ -10,173 +10,203 @@
     <link rel="stylesheet" th:href="@{/css/forms.css}">
 </head>
 <body>
-    <!-- Navigation Header -->
-    <header>
-        <div class="navbar">
-            <a href="/" class="navbar-brand">🏨 Hotel Reservation System</a>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a th:href="@{/}">Home</a></li>
-                    <li><a th:href="@{/rooms}">Rooms</a></li>
-                    <li><a th:href="@{/login}">Login</a></li>
-                    <li><a th:href="@{/register}">Register</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+<header>
+    <div class="navbar">
+        <a href="/" class="navbar-brand">🏨 Hotel Reservation System</a>
+        <nav>
+            <ul class="nav-menu">
+                <li><a th:href="@{/}">Home</a></li>
+                <li><a th:href="@{/rooms}">Rooms</a></li>
+                <li><a th:href="@{/login}">Login</a></li>
+                <li><a th:href="@{/register}">Register</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
 
-    <main>
-        <section class="section">
-            <div class="container">
-                <div class="form-container">
-                    <h1 class="text-center mb-2">Create Your Account</h1>
-                    <p class="text-center text-muted mb-3">Join us for an unforgettable hotel experience</p>
+<main>
+    <section class="section">
+        <div class="container">
+            <div class="form-container">
+                <h1 class="text-center mb-2">Create Your Account</h1>
+                <p class="text-center text-muted mb-3">Join us for an unforgettable hotel experience</p>
 
-                    <!-- Success Message -->
-                    <div th:if="${successMessage}" class="alert alert-success">
-                        <p th:text="${successMessage}"></p>
-                    </div>
+                <div th:if="${successMessage}" class="alert alert-success">
+                    <p th:text="${successMessage}"></p>
+                </div>
 
-                    <!-- Error Message -->
-                    <div th:if="${errorMessage}" class="alert alert-danger">
-                        <p th:text="${errorMessage}"></p>
-                    </div>
+                <div th:if="${errorMessage}" class="alert alert-danger">
+                    <p th:text="${errorMessage}"></p>
+                </div>
 
-                    <!-- Registration Form -->
-                    <!-- expects model attribute: userRegisterRequest -->
-                    <form th:action="@{/register}" method="post" th:object="${userRegisterRequest}">
-                        <div class="form-two-col">
-                            <div class="form-group">
-                                <label for="username">Username</label>
-                                <input
+                <form th:action="@{/register}" method="post" th:object="${userRegisterRequest}">
+                    <div class="form-two-col">
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input
                                     type="text"
                                     id="username"
                                     th:field="*{username}"
+                                    th:classappend="${#fields.hasErrors('username')} ? ' is-invalid'"
                                     placeholder="Choose a username"
                                     required>
-                                <span th:if="${#fields.hasErrors('username')}" class="form-error" th:errors="*{username}"></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="email">Email Address</label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    th:field="*{email}"
-                                    placeholder="Enter your email"
-                                    required>
-                                <span th:if="${#fields.hasErrors('email')}" class="form-error" th:errors="*{email}"></span>
-                            </div>
-                        </div>
-
-                        <div class="form-two-col">
-                            <div class="form-group">
-                                <label for="firstName">First Name</label>
-                                <input
-                                    type="text"
-                                    id="firstName"
-                                    th:field="*{firstName}"
-                                    placeholder="Enter your first name"
-                                    required>
-                                <span th:if="${#fields.hasErrors('firstName')}" class="form-error" th:errors="*{firstName}"></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="lastName">Last Name</label>
-                                <input
-                                    type="text"
-                                    id="lastName"
-                                    th:field="*{lastName}"
-                                    placeholder="Enter your last name"
-                                    required>
-                                <span th:if="${#fields.hasErrors('lastName')}" class="form-error" th:errors="*{lastName}"></span>
-                            </div>
+                            <span th:if="${#fields.hasErrors('username')}"
+                                  class="form-error"
+                                  th:errors="*{username}">
+                            </span>
                         </div>
 
                         <div class="form-group">
-                            <label for="phoneNumber">Phone Number</label>
+                            <label for="email">Email Address</label>
                             <input
+                                    type="email"
+                                    id="email"
+                                    th:field="*{email}"
+                                    th:classappend="${#fields.hasErrors('email')} ? ' is-invalid'"
+                                    placeholder="Enter your email"
+                                    required>
+                            <span th:if="${#fields.hasErrors('email')}"
+                                  class="form-error"
+                                  th:errors="*{email}">
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-two-col">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input
+                                    type="text"
+                                    id="firstName"
+                                    th:field="*{firstName}"
+                                    th:classappend="${#fields.hasErrors('firstName')} ? ' is-invalid'"
+                                    placeholder="Enter your first name"
+                                    required>
+                            <span th:if="${#fields.hasErrors('firstName')}"
+                                  class="form-error"
+                                  th:errors="*{firstName}">
+                            </span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input
+                                    type="text"
+                                    id="lastName"
+                                    th:field="*{lastName}"
+                                    th:classappend="${#fields.hasErrors('lastName')} ? ' is-invalid'"
+                                    placeholder="Enter your last name"
+                                    required>
+                            <span th:if="${#fields.hasErrors('lastName')}"
+                                  class="form-error"
+                                  th:errors="*{lastName}">
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone Number</label>
+                        <input
                                 type="tel"
                                 id="phoneNumber"
                                 th:field="*{phoneNumber}"
+                                th:classappend="${#fields.hasErrors('phoneNumber')} ? ' is-invalid'"
                                 placeholder="Enter your phone number"
                                 required>
-                            <span th:if="${#fields.hasErrors('phoneNumber')}" class="form-error" th:errors="*{phoneNumber}"></span>
-                        </div>
+                        <span th:if="${#fields.hasErrors('phoneNumber')}"
+                              class="form-error"
+                              th:errors="*{phoneNumber}">
+                        </span>
+                    </div>
 
-                        <div class="form-two-col">
-                            <div class="form-group">
-                                <label for="password">Password</label>
-                                <input
+                    <div class="form-two-col">
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input
                                     type="password"
                                     id="password"
                                     th:field="*{password}"
+                                    th:classappend="${#fields.hasErrors('password')} ? ' is-invalid'"
                                     placeholder="Create a password"
                                     required>
-                                <span th:if="${#fields.hasErrors('password')}" class="form-error" th:errors="*{password}"></span>
-                            </div>
+                            <span th:if="${#fields.hasErrors('password')}"
+                                  class="form-error"
+                                  th:errors="*{password}">
+                            </span>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="confirmPassword">Confirm Password</label>
-                                <input
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input
                                     type="password"
                                     id="confirmPassword"
                                     th:field="*{confirmPassword}"
+                                    th:classappend="${#fields.hasErrors('confirmPassword')} ? ' is-invalid'"
                                     placeholder="Confirm the password"
                                     required>
-                                <span th:if="${#fields.hasErrors('confirmPassword')}" class="form-error" th:errors="*{confirmPassword}"></span>
-                            </div>
+                            <span th:if="${#fields.hasErrors('confirmPassword')}"
+                                  class="form-error"
+                                  th:errors="*{confirmPassword}">
+                            </span>
                         </div>
+                    </div>
 
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
-                    </form>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        Create Account
+                    </button>
+                </form>
 
-                    <hr style="margin: 2rem 0; border: none; border-top: 1px solid #e0e0e0;">
+                <hr style="margin: 2rem 0; border: none; border-top: 1px solid #e0e0e0;">
 
-                    <p class="text-center">Already have an account?
-                        <a th:href="@{/login}" class="text-gold" style="text-decoration: none; font-weight: 600;">Login here</a>
-                    </p>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>About Us</h3>
-                <p>Hotel Reservation System is your premier destination for luxury accommodations and exceptional hospitality.</p>
-            </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a th:href="@{/}">Home</a></li>
-                    <li><a th:href="@{/rooms}">Rooms</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Contact</h3>
-                <p>📞 +1 (555) 123-4567</p>
-                <p>📧 info@hotelreservation.com</p>
-                <p>📍 123 Luxury Street, Premium City, PC 12345</p>
-            </div>
-            <div class="footer-section">
-                <h3>Follow Us</h3>
-                <ul>
-                    <li><a href="#">Facebook</a></li>
-                    <li><a href="#">Instagram</a></li>
-                    <li><a href="#">Twitter</a></li>
-                    <li><a href="#">LinkedIn</a></li>
-                </ul>
+                <p class="text-center">
+                    Already have an account?
+                    <a th:href="@{/login}" class="text-gold" style="text-decoration: none; font-weight: 600;">
+                        Login here
+                    </a>
+                </p>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 Hotel Reservation System. All rights reserved.</p>
+    </section>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>About Us</h3>
+            <p>Hotel Reservation System is your premier destination for luxury accommodations and exceptional hospitality.</p>
         </div>
-    </footer>
+
+        <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a th:href="@{/}">Home</a></li>
+                <li><a th:href="@{/rooms}">Rooms</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h3>Contact</h3>
+            <p>📞 +1 (555) 123-4567</p>
+            <p>📧 info@hotelreservation.com</p>
+            <p>📍 123 Luxury Street, Premium City, PC 12345</p>
+        </div>
+
+        <div class="footer-section">
+            <h3>Follow Us</h3>
+            <ul>
+                <li><a href="#">Facebook</a></li>
+                <li><a href="#">Instagram</a></li>
+                <li><a href="#">Twitter</a></li>
+                <li><a href="#">LinkedIn</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2024 Hotel Reservation System. All rights reserved.</p>
+    </div>
+</footer>
 </body>
 </html>
-

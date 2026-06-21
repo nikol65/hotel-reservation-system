@@ -24,9 +24,10 @@ public class UserRegisterRequest {
     @NotBlank(message = "Password is required")
     @Size(min = 8, max = 30, message = "Password must be between 8 and 30 characters")
     @Pattern(
-            regexp = "^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).+$",
-            message = "Password must contain at least one uppercase letter and one special character"
+            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).+$",
+            message = "Password must contain at least one uppercase letter, one lowercase letter, one digit and one special character"
     )
+
     private String password;
 
     @NotBlank(message = "Confirm password is required")
@@ -45,6 +46,8 @@ public class UserRegisterRequest {
     @Size(min = 2, max = 30, message = "Last name must be between 2 and 30 characters")
     private String lastName;
 
+    @NotBlank
+    @Size(min = 10, max = 15, message = "Phone number must be between 10 and 15 characters")
     @Pattern(
             regexp = "^[0-9+]+$",
             message = "Phone number can contain only digits and +"

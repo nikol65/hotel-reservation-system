@@ -28,7 +28,9 @@ public class RegistrationController {
     public ModelAndView register(
             @Valid @ModelAttribute("userRegisterRequest") UserRegisterRequest userRegisterRequest,
             BindingResult bindingResult) {
-        if (!userRegisterRequest.getPassword().equals(userRegisterRequest.getConfirmPassword())) {
+        if (userRegisterRequest.getPassword() != null
+                && userRegisterRequest.getConfirmPassword() != null
+                && !userRegisterRequest.getPassword().equals(userRegisterRequest.getConfirmPassword())) {
             bindingResult.rejectValue(
                     "confirmPassword",
                     "password.mismatch",
@@ -38,7 +40,38 @@ public class RegistrationController {
         if (bindingResult.hasErrors()) {
             return new ModelAndView("register");
         }
-        userService.register(userRegisterRequest);
+
+        try {
+            userService.register(userRegisterRequest);
+        } catch (RuntimeException e) {
+            if (e.getMessage().equals("Phone number already exists")) {
+                bindingResult.rejectValue(
+                        "phoneNumber",
+                        "phone.exists",
+                        "Phone number already exists"
+                );
+            } else if (e.getMessage().equals("Username already exists")) {
+                bindingResult.rejectValue(
+                        "username",
+                        "username.exists",
+                        "Username already exists"
+                );
+            } else if (e.getMessage().equals("Email already exists")) {
+                bindingResult.rejectValue(
+                        "email",
+                        "email.exists",
+                        "Email already exists"
+                );
+            } else {
+                bindingResult.reject(
+                        "registration.error",
+                        "Registration failed. Please try again."
+                );
+            }
+
+            return new ModelAndView("register");
+        }
+
         return new ModelAndView("redirect:/login");
     }
 }
