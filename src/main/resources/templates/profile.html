@@ -10,188 +10,187 @@
     <link rel="stylesheet" th:href="@{/css/profile.css}">
 </head>
 <body>
-    <!-- Navigation Header -->
-    <header>
-        <div class="navbar">
-            <a href="/" class="navbar-brand">🏨 Hotel Reservation System</a>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a th:href="@{/home}">Home</a></li>
-                    <li><a th:href="@{/rooms}">Rooms</a></li>
-                    <li><a th:href="@{/reservations}">My Reservations</a></li>
-                    <li><a th:href="@{/payments}">My Payments</a></li>
-                    <li><a th:href="@{/profile}">Profile</a></li>
-                    <li th:if="${session.userRole == 'ADMIN'}"><span class="nav-divider"></span></li>
-                    <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms}">Admin Rooms</a></li>
-                    <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms/add}">Add Room</a></li>
-                    <li>
-                        <form method="post" th:action="@{/logout}" style="display: inline;">
-                            <button type="submit" class="btn-logout">Logout</button>
-                        </form>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <main>
-        <section class="section">
-            <div class="container">
-                <h1 class="section-title">My Profile</h1>
-
-                <!-- Success Message -->
-                <div th:if="${successMessage}" class="alert alert-success">
-                    <p th:text="${successMessage}"></p>
-                </div>
-
-                <!-- Error Message -->
-                <div th:if="${errorMessage}" class="alert alert-danger">
-                    <p th:text="${errorMessage}"></p>
-                </div>
-
-                <div class="grid grid-2">
-                    <!-- Profile Information -->
-                    <div>
-                        <!-- expects model attribute: user -->
-                        <div class="profile-box">
-                            <h2 style="color: var(--secondary-color); margin-bottom: 1.5rem;">👤 Personal Information</h2>
-
-                            <div class="profile-item">
-                                <span class="profile-label">Username:</span>
-                                <span class="profile-value" th:text="${user.username}">johndoe</span>
-                            </div>
-
-                            <div class="profile-item">
-                                <span class="profile-label">First Name:</span>
-                                <span class="profile-value" th:text="${user.firstName}">John</span>
-                            </div>
-
-                            <div class="profile-item">
-                                <span class="profile-label">Last Name:</span>
-                                <span class="profile-value" th:text="${user.lastName}">Doe</span>
-                            </div>
-
-                            <div class="profile-item">
-                                <span class="profile-label">Email:</span>
-                                <span class="profile-value" th:text="${user.email}">john@example.com</span>
-                            </div>
-
-                            <div class="profile-item">
-                                <span class="profile-label">Phone Number:</span>
-                                <span class="profile-value" th:text="${user.phoneNumber}">+1 (555) 123-4567</span>
-                            </div>
-
-                            <div class="profile-item">
-                                <span class="profile-label">User Role:</span>
-                                <br>
-                                <span class="profile-role" th:text="${user.role}">USER</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Profile Actions -->
-                    <div>
-                        <div class="card">
-                            <div class="card-header">Account Settings</div>
-                            <div class="card-body" style="padding: 2rem; text-align: center;">
-                                <p style="margin-bottom: 1rem;">
-                                    <strong>Account Status:</strong><br>
-                                    <span style="color: var(--success-color); font-weight: bold;">✓ Active</span>
-                                </p>
-
-                                <div style="margin: 2rem 0; padding: 1rem; background-color: #f9f9f9; border-radius: 4px;">
-                                    <p style="font-size: 0.95rem; color: #666; margin-bottom: 1rem;">
-                                        Update your contact information and preferences
-                                    </p>
-                                    <a th:href="@{/profile/edit}" class="btn btn-primary" style="width: 100%;">
-                                        ✏️ Edit Profile
-                                    </a>
-                                </div>
-
-                                <div style="margin: 1rem 0; border-top: 1px solid #e0e0e0; padding-top: 1rem;">
-                                    <p style="color: #999; font-size: 0.85rem;">
-                                        Member since 2024
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Quick Stats Card -->
-                        <div class="card" style="margin-top: 1rem;">
-                            <div class="card-header">Account Statistics</div>
-                            <div class="card-body">
-                                <div class="profile-item">
-                                    <span class="profile-label">Total Reservations:</span>
-                                    <span class="profile-value">0</span>
-                                </div>
-                                <div class="profile-item">
-                                    <span class="profile-label">Total Spent:</span>
-                                    <span class="profile-value">$0.00</span>
-                                </div>
-                                <div class="profile-item">
-                                    <span class="profile-label">Loyalty Status:</span>
-                                    <span class="profile-value">Standard</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Danger Zone -->
-                <div style="margin-top: 2rem; padding: 1.5rem; background-color: #f8d7da; border-left: 4px solid var(--danger-color); border-radius: 4px;">
-                    <h3 style="color: var(--danger-color); margin-bottom: 1rem;">⚠️ Danger Zone</h3>
-                    <p style="margin-bottom: 1rem; color: #721c24;">
-                        These actions cannot be undone. Please be careful.
-                    </p>
-                    <form method="post" th:action="@{/profile/delete}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
-                        <button type="submit" class="btn btn-danger">🗑️ Delete Account</button>
+<header>
+    <div class="navbar">
+        <a href="/" class="navbar-brand">🏨 Hotel Reservation System</a>
+        <nav>
+            <ul class="nav-menu">
+                <li><a th:href="@{/home}">Home</a></li>
+                <li><a th:href="@{/rooms}">Rooms</a></li>
+                <li><a th:href="@{/reservations}">My Reservations</a></li>
+                <li><a th:href="@{/payments}">My Payments</a></li>
+                <li><a th:href="@{/profile}">Profile</a></li>
+                <li th:if="${session.userRole == 'ADMIN'}"><span class="nav-divider"></span></li>
+                <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms}">Admin Rooms</a></li>
+                <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms/add}">Add Room</a></li>
+                <li>
+                    <form method="post" th:action="@{/logout}" style="display: inline;">
+                        <button type="submit" class="btn-logout">Logout</button>
                     </form>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="section">
+        <div class="container">
+            <h1 class="section-title">My Profile</h1>
+
+            <div th:if="${successMessage}" class="alert alert-success">
+                <p th:text="${successMessage}"></p>
+            </div>
+
+            <div th:if="${errorMessage}" class="alert alert-danger">
+                <p th:text="${errorMessage}"></p>
+            </div>
+
+            <div class="grid grid-2">
+                <div>
+                    <div class="profile-box">
+                        <h2 style="color: var(--secondary-color); margin-bottom: 1.5rem;">
+                            👤 Personal Information
+                        </h2>
+
+                        <div class="profile-item">
+                            <span class="profile-label">Username:</span>
+                            <span class="profile-value" th:text="${user.username}">johndoe</span>
+                        </div>
+
+                        <div class="profile-item">
+                            <span class="profile-label">First Name:</span>
+                            <span class="profile-value" th:text="${user.firstName}">John</span>
+                        </div>
+
+                        <div class="profile-item">
+                            <span class="profile-label">Last Name:</span>
+                            <span class="profile-value" th:text="${user.lastName}">Doe</span>
+                        </div>
+
+                        <div class="profile-item">
+                            <span class="profile-label">Email:</span>
+                            <span class="profile-value" th:text="${user.email}">john@example.com</span>
+                        </div>
+
+                        <div class="profile-item">
+                            <span class="profile-label">Phone Number:</span>
+                            <span class="profile-value" th:text="${user.phoneNumber}">+1 (555) 123-4567</span>
+                        </div>
+
+                        <div class="profile-item">
+                            <span class="profile-label">User Role:</span>
+                            <br>
+                            <span class="profile-role" th:text="${user.role}">USER</span>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Back Button -->
-                <div style="margin-top: 2rem; text-align: center;">
-                    <a th:href="@{/home}" class="btn btn-secondary">← Back to Dashboard</a>
+                <div>
+                    <div class="card">
+                        <div class="card-header">Account Settings</div>
+                        <div class="card-body" style="padding: 2rem; text-align: center;">
+                            <p style="margin-bottom: 1rem;">
+                                <strong>Account Status:</strong><br>
+                                <span style="color: var(--success-color); font-weight: bold;">✓ Active</span>
+                            </p>
+
+                            <div style="margin: 2rem 0; padding: 1rem; background-color: #f9f9f9; border-radius: 4px;">
+                                <p style="font-size: 0.95rem; color: #666; margin-bottom: 1rem;">
+                                    Update your contact information and preferences
+                                </p>
+                                <a th:href="@{/profile/edit}" class="btn btn-primary" style="width: 100%;">
+                                    ✏️ Edit Profile
+                                </a>
+                            </div>
+
+                            <div style="margin: 1rem 0; border-top: 1px solid #e0e0e0; padding-top: 1rem;">
+                                <p style="color: #999; font-size: 0.85rem;">
+                                    Member since 2024
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top: 1rem;">
+                        <div class="card-header">Account Statistics</div>
+                        <div class="card-body">
+                            <div class="profile-item">
+                                <span class="profile-label">Total Reservations:</span>
+                                <span class="profile-value" th:text="${totalReservations}">0</span>
+                            </div>
+
+                            <div class="profile-item">
+                                <span class="profile-label">Total Spent:</span>
+                                <span class="profile-value">
+                                    $<span th:text="${totalSpent}">0.00</span>
+                                </span>
+                            </div>
+
+                            <div class="profile-item">
+                                <span class="profile-label">Loyalty Status:</span>
+                                <span class="profile-value" th:text="${loyaltyStatus}">Standard</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
-    </main>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>About Us</h3>
-                <p>Hotel Reservation System is your premier destination for luxury accommodations and exceptional hospitality.</p>
+            <div style="margin-top: 2rem; padding: 1.5rem; background-color: #f8d7da; border-left: 4px solid var(--danger-color); border-radius: 4px;">
+                <h3 style="color: var(--danger-color); margin-bottom: 1rem;">⚠️ Danger Zone</h3>
+                <p style="margin-bottom: 1rem; color: #721c24;">
+                    These actions cannot be undone. Please be careful.
+                </p>
+                <form method="post"
+                      th:action="@{/profile/delete}"
+                      style="display: inline;"
+                      onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+                    <button type="submit" class="btn btn-danger">🗑️ Delete Account</button>
+                </form>
             </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a th:href="@{/}">Home</a></li>
-                    <li><a th:href="@{/rooms}">Rooms</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Contact</h3>
-                <p>📞 +1 (555) 123-4567</p>
-                <p>📧 info@hotelreservation.com</p>
-                <p>📍 123 Luxury Street, Premium City, PC 12345</p>
-            </div>
-            <div class="footer-section">
-                <h3>Follow Us</h3>
-                <ul>
-                    <li><a href="#">Facebook</a></li>
-                    <li><a href="#">Instagram</a></li>
-                    <li><a href="#">Twitter</a></li>
-                    <li><a href="#">LinkedIn</a></li>
-                </ul>
+
+            <div style="margin-top: 2rem; text-align: center;">
+                <a th:href="@{/home}" class="btn btn-secondary">← Back to Dashboard</a>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 Hotel Reservation System. All rights reserved.</p>
+    </section>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>About Us</h3>
+            <p>Hotel Reservation System is your premier destination for luxury accommodations and exceptional hospitality.</p>
         </div>
-    </footer>
+        <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a th:href="@{/}">Home</a></li>
+                <li><a th:href="@{/rooms}">Rooms</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Contact</h3>
+            <p>📞 +1 (555) 123-4567</p>
+            <p>📧 info@hotelreservation.com</p>
+            <p>📍 123 Luxury Street, Premium City, PC 12345</p>
+        </div>
+        <div class="footer-section">
+            <h3>Follow Us</h3>
+            <ul>
+                <li><a href="#">Facebook</a></li>
+                <li><a href="#">Instagram</a></li>
+                <li><a href="#">Twitter</a></li>
+                <li><a href="#">LinkedIn</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2024 Hotel Reservation System. All rights reserved.</p>
+    </div>
+</footer>
 </body>
 </html>
-
