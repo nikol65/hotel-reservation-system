@@ -103,9 +103,7 @@
                                     <option value="">-- Select Room Type --</option>
                                     <option value="SINGLE">Single Room</option>
                                     <option value="DOUBLE">Double Room</option>
-                                    <option value="SUITE">Suite</option>
                                     <option value="APARTMENT">Luxury Apartment</option>
-                                    <option value="PENTHOUSE">Penthouse</option>
                                 </select>
                                 <span th:if="${#fields.hasErrors('roomType')}" class="form-error" th:errors="*{roomType}"></span>
                             </div>

@@ -4,11 +4,13 @@ import bg.softuni.hotel_reservation_system.model.dto.room.RoomAddRequest;
 import bg.softuni.hotel_reservation_system.model.dto.room.RoomDto;
 import bg.softuni.hotel_reservation_system.model.entity.Room;
 import bg.softuni.hotel_reservation_system.model.enums.RoomStatus;
+import bg.softuni.hotel_reservation_system.model.enums.RoomType;
 import bg.softuni.hotel_reservation_system.model.mapper.room.RoomMapper;
 import bg.softuni.hotel_reservation_system.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,5 +54,17 @@ public class RoomService {
         room.setRoomStatus(RoomStatus.INACTIVE);
         Room updatedRoom = roomRepository.save(room);
         return RoomMapper.toRoomDto(updatedRoom);
+    }
+    public List<RoomDto> findFilteredRooms(RoomType roomType,
+                                           BigDecimal maxPrice,
+                                           Integer minCapacity) {
+
+        return findAllRooms()
+                .stream()
+                .filter(room -> room.getRoomStatus() == RoomStatus.AVAILABLE)
+                .filter(room -> roomType == null || room.getRoomType() == roomType)
+                .filter(room -> maxPrice == null || room.getPricePerNight().compareTo(maxPrice) <= 0)
+                .filter(room -> minCapacity == null || room.getCapacity() >= minCapacity)
+                .toList();
     }
 }
