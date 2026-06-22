@@ -21,17 +21,17 @@
                     <li th:if="${session.userId == null}"><a th:href="@{/login}">Login</a></li>
                     <li th:if="${session.userId == null}"><a th:href="@{/register}">Register</a></li>
 
-                    <!-- Logged User Navigation -->
-                    <li th:if="${session.userId != null}"><a th:href="@{/home}">Home</a></li>
-                    <li th:if="${session.userId != null}"><a th:href="@{/rooms}">Rooms</a></li>
-                    <li th:if="${session.userId != null}"><a th:href="@{/reservations}">My Reservations</a></li>
-                    <li th:if="${session.userId != null}"><a th:href="@{/payments}">My Payments</a></li>
-                    <li th:if="${session.userId != null}"><a th:href="@{/profile}">Profile</a></li>
+                    <!-- Regular User Navigation (not admin) -->
+                    <li th:if="${session.userId != null && session.userRole != 'ADMIN'}"><a th:href="@{/home}">Home</a></li>
+                    <li th:if="${session.userId != null && session.userRole != 'ADMIN'}"><a th:href="@{/rooms}">Rooms</a></li>
+                    <li th:if="${session.userId != null && session.userRole != 'ADMIN'}"><a th:href="@{/reservations}">My Reservations</a></li>
+                    <li th:if="${session.userId != null && session.userRole != 'ADMIN'}"><a th:href="@{/payments}">My Payments</a></li>
+                    <li th:if="${session.userId != null && session.userRole != 'ADMIN'}"><a th:href="@{/profile}">Profile</a></li>
 
                     <!-- Admin Navigation -->
-                    <li th:if="${session.userRole == 'ADMIN'}"><span class="nav-divider"></span></li>
                     <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms}">Admin Rooms</a></li>
                     <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms/add}">Add Room</a></li>
+                    <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/profile}">Profile</a></li>
 
                     <!-- Logout Button -->
                     <li th:if="${session.userId != null}">

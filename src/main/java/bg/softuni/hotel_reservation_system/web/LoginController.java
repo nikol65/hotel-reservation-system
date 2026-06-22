@@ -21,31 +21,30 @@ public class LoginController {
 
     @GetMapping("/login")
     public ModelAndView login() {
-        ModelAndView mv = new ModelAndView();
-
-        mv.setViewName("login");
-        mv.addObject("userLoginRequest", new UserLoginRequest());
-
-        return mv;
+        ModelAndView modelAndView = new ModelAndView("login");
+        modelAndView.addObject("userLoginRequest", new UserLoginRequest());
+        return modelAndView;
     }
+
     @PostMapping("/login")
     public ModelAndView login(
             @ModelAttribute("userLoginRequest") UserLoginRequest userLoginRequest,
             HttpSession session) {
         try {
             UserDto user = userService.login(userLoginRequest);
+
             session.setAttribute("userId", user.getId());
             session.setAttribute("username", user.getUsername());
             session.setAttribute("userRole", user.getRole());
+            if ("ADMIN".equals(user.getRole().toString())) {
+                return new ModelAndView("redirect:/admin/rooms");
+            }
             return new ModelAndView("redirect:/home");
 
         } catch (RuntimeException e) {
             ModelAndView modelAndView = new ModelAndView("login");
             modelAndView.addObject("userLoginRequest", userLoginRequest);
-            modelAndView.addObject(
-                    "errorMessage",
-                    "Invalid username or password."
-            );
+            modelAndView.addObject("errorMessage", "Invalid username or password.");
             return modelAndView;
         }
     }

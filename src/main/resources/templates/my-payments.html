@@ -10,157 +10,172 @@
     <link rel="stylesheet" th:href="@{/css/payments.css}">
 </head>
 <body>
-    <!-- Navigation Header -->
-    <header>
-        <div class="navbar">
-            <a href="/" class="navbar-brand">🏨 Hotel Reservation System</a>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a th:href="@{/home}">Home</a></li>
-                    <li><a th:href="@{/rooms}">Rooms</a></li>
-                    <li><a th:href="@{/reservations}">My Reservations</a></li>
-                    <li><a th:href="@{/payments}">My Payments</a></li>
-                    <li><a th:href="@{/profile}">Profile</a></li>
-                    <li th:if="${session.userRole == 'ADMIN'}"><span class="nav-divider"></span></li>
-                    <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms}">Admin Rooms</a></li>
-                    <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms/add}">Add Room</a></li>
-                    <li>
-                        <form method="post" th:action="@{/logout}" style="display: inline;">
-                            <button type="submit" class="btn-logout">Logout</button>
-                        </form>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+<header>
+    <div class="navbar">
+        <a href="/" class="navbar-brand">🏨 Hotel Reservation System</a>
+        <nav>
+            <ul class="nav-menu">
+                <li th:if="${session.userId == null}"><a th:href="@{/}">Home</a></li>
+                <li th:if="${session.userId == null}"><a th:href="@{/rooms}">Rooms</a></li>
+                <li th:if="${session.userId == null}"><a th:href="@{/login}">Login</a></li>
+                <li th:if="${session.userId == null}"><a th:href="@{/register}">Register</a></li>
 
-    <main>
-        <section class="section">
-            <div class="container">
-                <h1 class="section-title">My Payments</h1>
+                <li th:if="${session.userId != null and session.userRole.name() == 'USER'}"><a th:href="@{/home}">Home</a></li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'USER'}"><a th:href="@{/rooms}">Rooms</a></li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'USER'}"><a th:href="@{/reservations}">My Reservations</a></li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'USER'}"><a th:href="@{/payments}">My Payments</a></li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'USER'}"><a th:href="@{/profile}">Profile</a></li>
 
-                <!-- Success Message -->
-                <div th:if="${successMessage}" class="alert alert-success">
-                    <p th:text="${successMessage}"></p>
-                </div>
+                <li th:if="${session.userId != null and session.userRole.name() == 'ADMIN'}"><a th:href="@{/admin/rooms}">Admin Rooms</a></li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'ADMIN'}"><a th:href="@{/admin/rooms/add}">Add Room</a></li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'ADMIN'}"><a th:href="@{/profile}">Profile</a></li>
 
-                <!-- Error Message -->
-                <div th:if="${errorMessage}" class="alert alert-danger">
-                    <p th:text="${errorMessage}"></p>
-                </div>
+                <li th:if="${session.userId != null}">
+                    <form method="post" th:action="@{/logout}" style="display: inline;">
+                        <button type="submit" class="btn-logout">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
 
-                <!-- expects model attribute: payments -->
-                <div th:if="${#lists.isEmpty(payments)}" class="alert alert-info">
-                    <p>You have no payment history yet.</p>
-                </div>
+<main>
+    <section class="section">
+        <div class="container">
+            <h1 class="section-title">My Payments</h1>
 
-                <!-- Payments Table -->
-                <div th:if="${!#lists.isEmpty(payments)}">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Payment Date</th>
-                                <th>Amount</th>
-                                <th>Payment Type</th>
-                                <th>Payment Method</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="payment : ${payments}">
-                                <td th:text="${payment.paymentDate}">2024-06-15</td>
-                                <td style="color: var(--secondary-color); font-weight: bold;">$<span th:text="${payment.amount}">500</span>.00</td>
-                                <td th:text="${payment.paymentType}">ONLINE</td>
-                                <td th:text="${payment.paymentMethod}">BANK_TRANSFER</td>
-                                <td>
-                                    <span
-                                        class="reservation-status"
-                                        th:classappend="${payment.paymentStatus == 'PAID' ? 'status-active' : payment.paymentStatus == 'PENDING' ? 'status-pending' : 'status-cancelled'}"
-                                        th:text="${payment.paymentStatus}">
-                                        PAID
-                                    </span>
-                                </td>
-                                <td>
-                                    <a
-                                        th:href="@{/payment/{id}(id=${payment.id})}"
-                                        class="btn btn-info btn-small">
-                                        View
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div th:if="${successMessage}" class="alert alert-success">
+                <p th:text="${successMessage}"></p>
+            </div>
 
-                <!-- Total Statistics -->
-                <div th:if="${!#lists.isEmpty(payments)}" class="grid grid-2" style="margin-top: 2rem;">
-                    <div class="card">
-                        <div class="card-header">Total Spent</div>
-                        <div class="card-body" style="text-align: center; padding: 2rem;">
-                            <p style="font-size: 0.9rem; color: #999; margin-bottom: 0.5rem;">Total Amount Paid</p>
-                            <p style="font-size: 2.5rem; color: var(--secondary-color); font-weight: bold;">
-                                $<span th:text="${#aggregates.sum(payments.![amount])}">1000</span>
-                            </p>
-                        </div>
+            <div th:if="${errorMessage}" class="alert alert-danger">
+                <p th:text="${errorMessage}"></p>
+            </div>
+
+            <div th:if="${#lists.isEmpty(payments)}" class="alert alert-info">
+                <p>You have no payment history yet.</p>
+            </div>
+
+            <div th:if="${!#lists.isEmpty(payments)}">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Payment Date</th>
+                        <th>Amount</th>
+                        <th>Payment Type</th>
+                        <th>Payment Method</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="payment : ${payments}">
+                        <td th:text="${#temporals.format(payment.paymentDate, 'dd.MM.yyyy HH:mm')}">
+                            13.06.2026 23:29
+                        </td>
+
+                        <td style="color: var(--secondary-color); font-weight: bold;">
+                            $<span th:text="${payment.amount}">500</span>
+                        </td>
+
+                        <td th:text="${payment.paymentType}">ONLINE</td>
+
+                        <td th:text="${payment.paymentMethod}">BANK_TRANSFER</td>
+
+                        <td>
+                            <span th:if="${payment.paymentStatus.name() == 'PAID'}"
+                                  class="reservation-status status-active"
+                                  th:text="${payment.paymentStatus}">
+                                PAID
+                            </span>
+
+                            <span th:if="${payment.paymentStatus.name() == 'PENDING'}"
+                                  class="reservation-status status-pending"
+                                  th:text="${payment.paymentStatus}">
+                                PENDING
+                            </span>
+
+                            <span th:if="${payment.paymentStatus.name() != 'PAID' and payment.paymentStatus.name() != 'PENDING'}"
+                                  class="reservation-status status-cancelled"
+                                  th:text="${payment.paymentStatus}">
+                                CANCELLED
+                            </span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:if="${!#lists.isEmpty(payments)}" class="grid grid-2" style="margin-top: 2rem;">
+                <div class="card">
+                    <div class="card-header">Total Payments</div>
+                    <div class="card-body" style="text-align: center; padding: 2rem;">
+                        <p style="font-size: 0.9rem; color: #999; margin-bottom: 0.5rem;">
+                            Number of Payments
+                        </p>
+                        <p style="font-size: 2.5rem; color: var(--secondary-color); font-weight: bold;"
+                           th:text="${payments.size()}">
+                            0
+                        </p>
                     </div>
-                    <div class="card">
-                        <div class="card-header">Payment Statistics</div>
-                        <div class="card-body" style="padding: 2rem;">
-                            <p style="margin-bottom: 0.5rem;">
-                                <strong>Total Payments:</strong> <span th:text="${payments.size()}">5</span>
-                            </p>
-                            <p style="margin-bottom: 0.5rem;">
-                                <strong>Status:</strong> All payments completed ✓
-                            </p>
-                        </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">Payment Status</div>
+                    <div class="card-body" style="padding: 2rem;">
+                        <p style="margin-bottom: 0.5rem;">
+                            <strong>Status:</strong> Payment history is available.
+                        </p>
                     </div>
                 </div>
+            </div>
 
-                <!-- Back Button -->
-                <div style="margin-top: 2rem; text-align: center;">
-                    <a th:href="@{/home}" class="btn btn-secondary">← Back to Dashboard</a>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>About Us</h3>
-                <p>Hotel Reservation System is your premier destination for luxury accommodations and exceptional hospitality.</p>
-            </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a th:href="@{/}">Home</a></li>
-                    <li><a th:href="@{/rooms}">Rooms</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Contact</h3>
-                <p>📞 +1 (555) 123-4567</p>
-                <p>📧 info@hotelreservation.com</p>
-                <p>📍 123 Luxury Street, Premium City, PC 12345</p>
-            </div>
-            <div class="footer-section">
-                <h3>Follow Us</h3>
-                <ul>
-                    <li><a href="#">Facebook</a></li>
-                    <li><a href="#">Instagram</a></li>
-                    <li><a href="#">Twitter</a></li>
-                    <li><a href="#">LinkedIn</a></li>
-                </ul>
+            <div style="margin-top: 2rem; text-align: center;">
+                <a th:href="@{/home}" class="btn btn-secondary">← Back to Dashboard</a>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 Hotel Reservation System. All rights reserved.</p>
+    </section>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>About Us</h3>
+            <p>Hotel Reservation System is your premier destination for luxury accommodations and exceptional hospitality.</p>
         </div>
-    </footer>
+
+        <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a th:href="@{/}">Home</a></li>
+                <li><a th:href="@{/rooms}">Rooms</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h3>Contact</h3>
+            <p>📞 +1 (555) 123-4567</p>
+            <p>📧 info@hotelreservation.com</p>
+            <p>📍 123 Luxury Street, PC 12345</p>
+        </div>
+
+        <div class="footer-section">
+            <h3>Follow Us</h3>
+            <ul>
+                <li><a href="#">Facebook</a></li>
+                <li><a href="#">Instagram</a></li>
+                <li><a href="#">Twitter</a></li>
+                <li><a href="#">LinkedIn</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2024 Hotel Reservation System. All rights reserved.</p>
+    </div>
+</footer>
 </body>
 </html>
-

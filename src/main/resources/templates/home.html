@@ -7,142 +7,215 @@
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/home.css}">
 </head>
 <body>
-    <!-- Navigation Header -->
-    <header>
-        <div class="navbar">
-            <span th:text="${session.username}"></span>
-            <a href="/" class="navbar-brand">🏨 Hotel Reservation System</a>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a th:href="@{/home}">Home</a></li>
-                    <li><a th:href="@{/rooms}">Rooms</a></li>
-                    <li><a th:href="@{/reservations}">My Reservations</a></li>
-                    <li><a th:href="@{/payments}">My Payments</a></li>
-                    <li><a th:href="@{/profile}">Profile</a></li>
-                    <li th:if="${session.userRole == 'ADMIN'}"><span class="nav-divider"></span></li>
-                    <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms}">Admin Rooms</a></li>
-                    <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms/add}">Add Room</a></li>
-                    <li>
-                        <form method="post" th:action="@{/logout}" style="display: inline;">
-                            <button type="submit" class="btn-logout">Logout</button>
-                        </form>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+<header>
+    <div class="navbar">
+        <a href="/" class="navbar-brand">🏨 Hotel Reservation System</a>
 
-    <main>
-        <section class="section">
-            <div class="container">
-                <!-- Welcome Message -->
-                <div class="welcome-box">
-                    <h2>Welcome back, <span th:text="${session.userName}">User</span>!</h2>
-                    <p>Enjoy your stay with us. Manage your reservations, payments, and profile information.</p>
+        <nav>
+            <ul class="nav-menu">
+                <li th:if="${session.userId == null}">
+                    <a th:href="@{/}">Home</a>
+                </li>
+                <li th:if="${session.userId == null}">
+                    <a th:href="@{/rooms}">Rooms</a>
+                </li>
+                <li th:if="${session.userId == null}">
+                    <a th:href="@{/login}">Login</a>
+                </li>
+                <li th:if="${session.userId == null}">
+                    <a th:href="@{/register}">Register</a>
+                </li>
+
+                <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
+                    <a th:href="@{/home}">Home</a>
+                </li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
+                    <a th:href="@{/rooms}">Rooms</a>
+                </li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
+                    <a th:href="@{/reservations}">My Reservations</a>
+                </li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
+                    <a th:href="@{/payments}">My Payments</a>
+                </li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
+                    <a th:href="@{/profile}">Profile</a>
+                </li>
+
+                <li th:if="${session.userId != null and session.userRole.name() == 'ADMIN'}">
+                    <a th:href="@{/admin/rooms}">Admin Rooms</a>
+                </li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'ADMIN'}">
+                    <a th:href="@{/admin/rooms/add}">Add Room</a>
+                </li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'ADMIN'}">
+                    <a th:href="@{/profile}">Profile</a>
+                </li>
+
+                <li th:if="${session.userId != null}">
+                    <form method="post" th:action="@{/logout}" style="display: inline;">
+                        <button type="submit" class="btn-logout">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="home-hero">
+        <div class="hero-overlay">
+            <div class="hero-content container">
+                <div class="hero-text">
+                    <p class="eyebrow">Luxury Hotel Dashboard</p>
+
+                    <h1>
+                        Welcome back,
+                        <span th:text="${session.username}">Guest</span>!
+                    </h1>
+
+                    <p>
+                        Manage your stay, explore available rooms, check your reservations,
+                        review payments, and keep your profile information up to date.
+                    </p>
+
+                    <div class="hero-ctas">
+                        <a class="btn btn-primary" th:href="@{/rooms}">
+                            Browse Rooms
+                        </a>
+
+                        <a class="btn btn-outline" th:href="@{/profile}">
+                            My Profile
+                        </a>
+                    </div>
                 </div>
 
-                <!-- Dashboard Menu -->
-                <h2 style="margin: 2rem 0 1.5rem 0; font-size: 1.8rem;">Quick Actions</h2>
-                <div class="dashboard-menu">
-                    <div class="menu-card">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">🏠</div>
-                        <h3>Browse Rooms</h3>
-                        <p>Explore our luxury rooms and book your next stay.</p>
-                        <a th:href="@{/rooms}">View Rooms →</a>
+                <div class="hero-panel">
+                    <h3>Account Overview</h3>
+
+                    <div class="overview-row">
+                        <span>Account</span>
+                        <strong>Active</strong>
                     </div>
-                    <div class="menu-card">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">📅</div>
-                        <h3>My Reservations</h3>
-                        <p>Check your current and past reservations.</p>
-                        <a th:href="@{/reservations}">View Reservations →</a>
+
+                    <div class="overview-row">
+                        <span>Role</span>
+                        <strong th:text="${session.userRole}">USER</strong>
                     </div>
-                    <div class="menu-card">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">💳</div>
-                        <h3>My Payments</h3>
-                        <p>View and manage your payment history.</p>
-                        <a th:href="@{/payments}">View Payments →</a>
-                    </div>
-                    <div class="menu-card">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">👤</div>
-                        <h3>My Profile</h3>
-                        <p>Update your personal information and settings.</p>
-                        <a th:href="@{/profile}">Edit Profile →</a>
+
+                    <div class="overview-row">
+                        <span>Member Area</span>
+                        <strong>Available</strong>
                     </div>
                 </div>
-
-                <!-- Recent Activity Section -->
-                <section style="margin-top: 3rem;">
-                    <h2 style="font-size: 1.8rem; margin-bottom: 1.5rem;">Recent Information</h2>
-                    <div class="grid grid-2">
-                        <div class="card">
-                            <div class="card-header">Quick Stats</div>
-                            <div class="card-body">
-                                <div style="margin-bottom: 1rem;">
-                                    <strong>Account Status:</strong> Active ✓
-                                </div>
-                                <div style="margin-bottom: 1rem;">
-                                    <strong>Member Since:</strong> 2024
-                                </div>
-                                <div>
-                                    <strong>Role:</strong> <span class="profile-role" th:text="${session.userRole}">User</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header">Contact Information</div>
-                            <div class="card-body">
-                                <div style="margin-bottom: 1rem;">
-                                    <strong>Email:</strong> <span th:text="${session.userEmail}">user@email.com</span>
-                                </div>
-                                <div>
-                                    <strong>Phone:</strong> <span th:text="${session.userPhone}">+1 (555) 123-4567</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>About Us</h3>
-                <p>Hotel Reservation System is your premier destination for luxury accommodations and exceptional hospitality.</p>
-            </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a th:href="@{/}">Home</a></li>
-                    <li><a th:href="@{/rooms}">Rooms</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Contact</h3>
-                <p>📞 +1 (555) 123-4567</p>
-                <p>📧 info@hotelreservation.com</p>
-                <p>📍 123 Luxury Street, Premium City, PC 12345</p>
-            </div>
-            <div class="footer-section">
-                <h3>Follow Us</h3>
-                <ul>
-                    <li><a href="#">Facebook</a></li>
-                    <li><a href="#">Instagram</a></li>
-                    <li><a href="#">Twitter</a></li>
-                    <li><a href="#">LinkedIn</a></li>
-                </ul>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 Hotel Reservation System. All rights reserved.</p>
+    </section>
+
+    <section class="section container">
+        <h2 class="section-title">Quick Actions</h2>
+
+        <div class="quick-actions">
+            <a class="action-card" th:href="@{/rooms}">
+                <div class="action-icon">🏠</div>
+                <h3>Browse Rooms</h3>
+                <p>Explore our available rooms and book your next stay.</p>
+                <span class="action-link">View Rooms →</span>
+            </a>
+
+            <a class="action-card" th:href="@{/reservations}">
+                <div class="action-icon">📅</div>
+                <h3>My Reservations</h3>
+                <p>Check your current and past reservations.</p>
+                <span class="action-link">View Reservations →</span>
+            </a>
+
+            <a class="action-card" th:href="@{/payments}">
+                <div class="action-icon">💳</div>
+                <h3>My Payments</h3>
+                <p>View your payment history and payment status.</p>
+                <span class="action-link">View Payments →</span>
+            </a>
+
+            <a class="action-card" th:href="@{/profile}">
+                <div class="action-icon">👤</div>
+                <h3>My Profile</h3>
+                <p>Review your personal information and account details.</p>
+                <span class="action-link">View Profile →</span>
+            </a>
         </div>
-    </footer>
+
+        <div class="dashboard-info-grid">
+            <div class="info-card">
+                <h3>🏨 Find the Right Room</h3>
+                <p>
+                    Browse rooms by type, capacity, floor, and price.
+                    Choose a room that fits your stay and complete your reservation.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>⏳ Payment Reminder</h3>
+                <p>
+                    After creating a reservation, you have 6 hours to complete payment.
+                    Unpaid reservations are automatically cancelled.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>💳 Payment History</h3>
+                <p>
+                    Track your completed payments and payment methods from the payments page.
+                </p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>About Us</h3>
+            <p>
+                Hotel Reservation System is your premier destination for luxury accommodations
+                and exceptional hospitality.
+            </p>
+        </div>
+
+        <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a th:href="@{/}">Home</a></li>
+                <li><a th:href="@{/rooms}">Rooms</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h3>Contact</h3>
+            <p>📞 +1 (555) 123-4567</p>
+            <p>📧 info@hotelreservation.com</p>
+            <p>📍 123 Luxury Street, Premium City, PC 12345</p>
+        </div>
+
+        <div class="footer-section">
+            <h3>Follow Us</h3>
+            <ul>
+                <li><a href="#">Facebook</a></li>
+                <li><a href="#">Instagram</a></li>
+                <li><a href="#">Twitter</a></li>
+                <li><a href="#">LinkedIn</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2024 Hotel Reservation System. All rights reserved.</p>
+    </div>
+</footer>
 </body>
 </html>
-
