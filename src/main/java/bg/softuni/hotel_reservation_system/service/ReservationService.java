@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -46,6 +47,10 @@ public class ReservationService {
 
         Room room = roomRepository.findById(roomId).orElseThrow(() ->
                 new RuntimeException("Room not found"));
+
+        if (request.getCheckInDate().isBefore(LocalDate.now())) {
+            throw new RuntimeException("Check-in date cannot be before today");
+        }
 
         if (room.getRoomStatus() == RoomStatus.INACTIVE) {
             throw new RuntimeException("Room is inactive");

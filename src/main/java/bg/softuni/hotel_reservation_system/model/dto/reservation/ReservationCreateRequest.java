@@ -14,15 +14,15 @@ import java.time.LocalDate;
 @Builder
 public class ReservationCreateRequest {
 
-    @NotNull
+    @NotNull(message = "Check-in date is required")
     @FutureOrPresent(message = "Check-in date cannot be before today")
     private LocalDate checkInDate;
 
-    @NotNull
+    @NotNull(message = "Check-out date is required")
     @Future(message = "Check-out date must be in the future")
     private LocalDate checkOutDate;
 
-    @NotNull
-    @Min(1)
+    @NotNull(message = "Number of guests is required")
+    @Min(value = 1, message = "Number of guests must be at least 1")
     private Integer numberOfGuests;
 }
