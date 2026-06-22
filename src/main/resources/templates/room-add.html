@@ -16,15 +16,46 @@
             <a href="/" class="navbar-brand">🏨 Hotel Reservation System</a>
             <nav>
                 <ul class="nav-menu">
-                    <li><a th:href="@{/home}">Home</a></li>
-                    <li><a th:href="@{/rooms}">Rooms</a></li>
-                    <li><a th:href="@{/reservations}">My Reservations</a></li>
-                    <li><a th:href="@{/payments}">My Payments</a></li>
-                    <li><a th:href="@{/profile}">Profile</a></li>
-                    <li th:if="${session.userRole == 'ADMIN'}"><span class="nav-divider"></span></li>
-                    <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms}">Admin Rooms</a></li>
-                    <li th:if="${session.userRole == 'ADMIN'}"><a th:href="@{/admin/rooms/add}">Add Room</a></li>
-                    <li>
+                    <li th:if="${session.userId == null}">
+                        <a th:href="@{/}">Home</a>
+                    </li>
+                    <li th:if="${session.userId == null}">
+                        <a th:href="@{/rooms}">Rooms</a>
+                    </li>
+                    <li th:if="${session.userId == null}">
+                        <a th:href="@{/login}">Login</a>
+                    </li>
+                    <li th:if="${session.userId == null}">
+                        <a th:href="@{/register}">Register</a>
+                    </li>
+
+                    <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
+                        <a th:href="@{/home}">Home</a>
+                    </li>
+                    <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
+                        <a th:href="@{/rooms}">Rooms</a>
+                    </li>
+                    <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
+                        <a th:href="@{/reservations}">My Reservations</a>
+                    </li>
+                    <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
+                        <a th:href="@{/payments}">My Payments</a>
+                    </li>
+                    <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
+                        <a th:href="@{/profile}">Profile</a>
+                    </li>
+
+                    <li th:if="${session.userId != null and session.userRole.name() == 'ADMIN'}">
+                        <a th:href="@{/admin/rooms}">Admin Rooms</a>
+                    </li>
+                    <li th:if="${session.userId != null and session.userRole.name() == 'ADMIN'}">
+                        <a th:href="@{/admin/rooms/add}">Add Room</a>
+                    </li>
+                    <li th:if="${session.userId != null and session.userRole.name() == 'ADMIN'}">
+                        <a th:href="@{/profile}">Profile</a>
+                    </li>
+
+                    <li th:if="${session.userId != null}">
                         <form method="post" th:action="@{/logout}" style="display: inline;">
                             <button type="submit" class="btn-logout">Logout</button>
                         </form>
