@@ -21,6 +21,9 @@ public class RoomService {
     private final RoomRepository roomRepository;
 
     public RoomDto addRoom(RoomAddRequest roomAddRequest) {
+
+        validateRoomCapacity(roomAddRequest);
+
         if (roomRepository.existsByRoomNumber(roomAddRequest.getRoomNumber())) {
             throw new RuntimeException("Room number already exists");
         }
@@ -41,6 +44,7 @@ public class RoomService {
     }
 
     public RoomDto updateRoom(UUID id, RoomAddRequest request) {
+        validateRoomCapacity(request);
         Room room = roomRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Room not found"));
         RoomMapper.updateRoomFromRequest(request, room);
@@ -89,5 +93,38 @@ public class RoomService {
                 .mapToDouble(BigDecimal::doubleValue)
                 .average()
                 .orElse(0);
+    }
+    private void validateRoomCapacity(RoomAddRequest request) {
+        if (request.getRoomType() == null || request.getCapacity() == null) {
+            return;
+        }
+
+        int maxCapacity;
+
+        switch (request.getRoomType()) {
+            case SINGLE -> maxCapacity = 1;
+            case DOUBLE -> maxCapacity = 2;
+            case APARTMENT -> maxCapacity = 4;
+            default -> throw new RuntimeException("Unsupported room type");
+        }
+
+        if (request.getCapacity() > maxCapacity) {
+            throw new RuntimeException(
+                    request.getRoomType() + " room cannot have more than " + maxCapacity + " guests"
+            );
+        }
+    }
+
+    public boolean isInvalidRoomTypeCapacity(RoomType roomType, Integer minCapacity) {
+        if (roomType == null || minCapacity == null) {
+            return false;
+        }
+
+        return switch (roomType) {
+            case SINGLE -> minCapacity > 1;
+            case DOUBLE -> minCapacity > 2;
+            case APARTMENT -> minCapacity > 4;
+            default -> false;
+        };
     }
 }

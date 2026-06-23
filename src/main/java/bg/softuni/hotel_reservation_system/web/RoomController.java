@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -22,6 +23,18 @@ public class RoomController {
                               @RequestParam(required = false) Integer minCapacity) {
 
         ModelAndView modelAndView = new ModelAndView("rooms");
+
+        if (roomService.isInvalidRoomTypeCapacity(roomType, minCapacity)) {
+            modelAndView.addObject("rooms", List.of());
+            modelAndView.addObject("filterError",
+                    roomType + " room cannot fit " + minCapacity + " guests.");
+
+            modelAndView.addObject("selectedRoomType", roomType);
+            modelAndView.addObject("maxPrice", maxPrice);
+            modelAndView.addObject("minCapacity", minCapacity);
+
+            return modelAndView;
+        }
 
         modelAndView.addObject("rooms",
                 roomService.findFilteredRooms(roomType, maxPrice, minCapacity));
