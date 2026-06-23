@@ -10,187 +10,268 @@
     <link rel="stylesheet" th:href="@{/css/admin-rooms.css}">
 </head>
 <body>
-    <!-- Navigation Header -->
-    <header>
-        <div class="navbar">
-            <a href="/" class="navbar-brand">🏨 Hotel Reservation System</a>
-            <nav>
-                <ul class="nav-menu">
-                    <li th:if="${session.userId == null}">
-                        <a th:href="@{/}">Home</a>
-                    </li>
-                    <li th:if="${session.userId == null}">
-                        <a th:href="@{/rooms}">Rooms</a>
-                    </li>
-                    <li th:if="${session.userId == null}">
-                        <a th:href="@{/login}">Login</a>
-                    </li>
-                    <li th:if="${session.userId == null}">
-                        <a th:href="@{/register}">Register</a>
-                    </li>
+<header>
+    <div class="navbar">
+        <a href="/" class="navbar-brand">🏨 Hotel Reservation System</a>
+        <nav>
+            <ul class="nav-menu">
+                <li th:if="${session.userId == null}">
+                    <a th:href="@{/}">Home</a>
+                </li>
+                <li th:if="${session.userId == null}">
+                    <a th:href="@{/rooms}">Rooms</a>
+                </li>
+                <li th:if="${session.userId == null}">
+                    <a th:href="@{/login}">Login</a>
+                </li>
+                <li th:if="${session.userId == null}">
+                    <a th:href="@{/register}">Register</a>
+                </li>
 
-                    <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
-                        <a th:href="@{/home}">Home</a>
-                    </li>
-                    <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
-                        <a th:href="@{/rooms}">Rooms</a>
-                    </li>
-                    <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
-                        <a th:href="@{/reservations}">My Reservations</a>
-                    </li>
-                    <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
-                        <a th:href="@{/payments}">My Payments</a>
-                    </li>
-                    <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
-                        <a th:href="@{/profile}">Profile</a>
-                    </li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
+                    <a th:href="@{/home}">Home</a>
+                </li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
+                    <a th:href="@{/rooms}">Rooms</a>
+                </li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
+                    <a th:href="@{/reservations}">My Reservations</a>
+                </li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
+                    <a th:href="@{/payments}">My Payments</a>
+                </li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'USER'}">
+                    <a th:href="@{/profile}">Profile</a>
+                </li>
 
-                    <li th:if="${session.userId != null and session.userRole.name() == 'ADMIN'}">
-                        <a th:href="@{/admin/rooms}">Admin Rooms</a>
-                    </li>
-                    <li th:if="${session.userId != null and session.userRole.name() == 'ADMIN'}">
-                        <a th:href="@{/admin/rooms/add}">Add Room</a>
-                    </li>
-                    <li th:if="${session.userId != null and session.userRole.name() == 'ADMIN'}">
-                        <a th:href="@{/profile}">Profile</a>
-                    </li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'ADMIN'}">
+                    <a th:href="@{/admin/rooms}">Admin Rooms</a>
+                </li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'ADMIN'}">
+                    <a th:href="@{/admin/rooms/add}">Add Room</a>
+                </li>
+                <li th:if="${session.userId != null and session.userRole.name() == 'ADMIN'}">
+                    <a th:href="@{/profile}">Profile</a>
+                </li>
 
-                    <li th:if="${session.userId != null}">
-                        <form method="post" th:action="@{/logout}" style="display: inline;">
-                            <button type="submit" class="btn-logout">Logout</button>
-                        </form>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+                <li th:if="${session.userId != null}">
+                    <form method="post" th:action="@{/logout}" style="display: inline;">
+                        <button type="submit" class="btn-logout">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
 
-    <main>
-        <section class="section">
-            <div class="container">
-                <div class="admin-section">
-                    <h2>🏨 Room Management</h2>
-                    <p>Manage all hotel rooms, edit details, and control availability.</p>
-                </div>
-
-                <!-- Success Message -->
-                <div th:if="${successMessage}" class="alert alert-success">
-                    <p th:text="${successMessage}"></p>
-                </div>
-
-                <!-- Error Message -->
-                <div th:if="${errorMessage}" class="alert alert-danger">
-                    <p th:text="${errorMessage}"></p>
-                </div>
-
-                <!-- Admin Toolbar -->
-                <div class="admin-toolbar">
-                    <a th:href="@{/admin/rooms/add}" class="btn btn-primary">+ Add New Room</a>
-                </div>
-
-                <!-- expects model attribute: rooms -->
-                <div th:if="${#lists.isEmpty(rooms)}" class="alert alert-info">
-                    <p>No rooms available. <a th:href="@{/admin/rooms/add}">Create the first room</a></p>
-                </div>
-
-                <!-- Rooms Table -->
-                <div th:if="${!#lists.isEmpty(rooms)}" class="admin-table">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Room #</th>
-                                <th>Type</th>
-                                <th>Price/Night</th>
-                                <th>Capacity</th>
-                                <th>Floor</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="room : ${rooms}">
-                                <td th:text="${room.roomNumber}">101</td>
-                                <td th:text="${room.roomType}">Single</td>
-                                <td style="color: var(--secondary-color); font-weight: bold;">$<span th:text="${room.pricePerNight}">100</span></td>
-                                <td th:text="${room.capacity}">2</td>
-                                <td th:text="${room.floor}">1</td>
-                                <td>
-    <span th:if="${room.roomStatus.name() == 'AVAILABLE'}"
-          class="reservation-status status-active"
-          th:text="${room.roomStatus}">
-        AVAILABLE
-    </span>
-
-                                    <span th:if="${room.roomStatus.name() == 'OCCUPIED'}"
-                                          class="reservation-status status-pending"
-                                          th:text="${room.roomStatus}">
-        OCCUPIED
-    </span>
-
-                                    <span th:if="${room.roomStatus.name() != 'AVAILABLE' and room.roomStatus.name() != 'OCCUPIED'}"
-                                          class="reservation-status status-cancelled"
-                                          th:text="${room.roomStatus}">
-        INACTIVE
-    </span>
-                                </td>
-                                <td>
-                                    <a
-                                        th:href="@{/admin/rooms/{id}/edit(id=${room.id})}"
-                                        class="btn btn-info btn-small">
-                                        Edit
-                                    </a>
-                                    <form
-                                        method="post"
-                                        th:action="@{/admin/rooms/{id}/delete(id=${room.id})}"
-                                        style="display: inline;"
-                                        onsubmit="return confirm('Are you sure you want to deactivate this room?');">
-                                        <button type="submit" class="btn btn-danger btn-small">Deactivate</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+<main>
+    <section class="section">
+        <div class="container">
+            <div class="admin-section">
+                <h2>🏨 Room Management</h2>
+                <p>Manage all hotel rooms, edit details, and control availability.</p>
             </div>
-        </section>
-    </main>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>About Us</h3>
-                <p>Hotel Reservation System is your premier destination for luxury accommodations and exceptional hospitality.</p>
+            <div th:if="${successMessage}" class="alert alert-success">
+                <p th:text="${successMessage}"></p>
             </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a th:href="@{/}">Home</a></li>
-                    <li><a th:href="@{/rooms}">Rooms</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
+
+            <div th:if="${errorMessage}" class="alert alert-danger">
+                <p th:text="${errorMessage}"></p>
             </div>
-            <div class="footer-section">
-                <h3>Contact</h3>
-                <p>📞 +1 (555) 123-4567</p>
-                <p>📧 info@hotelreservation.com</p>
-                <p>📍 123 Luxury Street, Premium City, PC 12345</p>
+
+            <div class="admin-toolbar">
+                <a th:href="@{/admin/rooms/add}" class="btn btn-primary">+ Add New Room</a>
             </div>
-            <div class="footer-section">
-                <h3>Follow Us</h3>
-                <ul>
-                    <li><a href="#">Facebook</a></li>
-                    <li><a href="#">Instagram</a></li>
-                    <li><a href="#">Twitter</a></li>
-                    <li><a href="#">LinkedIn</a></li>
-                </ul>
+
+            <div th:if="${#lists.isEmpty(rooms)}" class="alert alert-info">
+                <p>No rooms available. <a th:href="@{/admin/rooms/add}">Create the first room</a></p>
+            </div>
+
+            <div th:if="${!#lists.isEmpty(rooms)}" class="admin-table">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Room #</th>
+                        <th>Type</th>
+                        <th>Price/Night</th>
+                        <th>Capacity</th>
+                        <th>Floor</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="room : ${rooms}">
+                        <td th:text="${room.roomNumber}">101</td>
+
+                        <td th:text="${room.roomType}">Single</td>
+
+                        <td style="color: var(--secondary-color); font-weight: bold;">
+                            $<span th:text="${room.pricePerNight}">100</span>
+                        </td>
+
+                        <td th:text="${room.capacity}">2</td>
+
+                        <td th:text="${room.floor}">1</td>
+
+                        <td>
+                            <span th:if="${room.roomStatus.name() == 'AVAILABLE'}"
+                                  class="reservation-status status-active"
+                                  th:text="${room.roomStatus}">
+                                AVAILABLE
+                            </span>
+
+                            <span th:if="${room.roomStatus.name() == 'OCCUPIED'}"
+                                  class="reservation-status status-pending"
+                                  th:text="${room.roomStatus}">
+                                OCCUPIED
+                            </span>
+
+                            <span th:if="${room.roomStatus.name() != 'AVAILABLE' and room.roomStatus.name() != 'OCCUPIED'}"
+                                  class="reservation-status status-cancelled"
+                                  th:text="${room.roomStatus}">
+                                INACTIVE
+                            </span>
+                        </td>
+
+                        <td>
+                            <a th:href="@{/admin/rooms/{id}/edit(id=${room.id})}"
+                               class="btn btn-info btn-small">
+                                Edit
+                            </a>
+
+                            <form method="post"
+                                  th:action="@{/admin/rooms/{id}/delete(id=${room.id})}"
+                                  style="display: inline;"
+                                  class="deactivate-room-form">
+
+                                <button type="button"
+                                        class="btn btn-danger btn-small"
+                                        th:attr="onclick=|openDeactivateModal(this, '${room.roomNumber}')|">
+                                    Deactivate
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 Hotel Reservation System. All rights reserved.</p>
+    </section>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>About Us</h3>
+            <p>Hotel Reservation System is your premier destination for luxury accommodations and exceptional hospitality.</p>
         </div>
-    </footer>
+
+        <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a th:href="@{/}">Home</a></li>
+                <li><a th:href="@{/rooms}">Rooms</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h3>Contact</h3>
+            <p>📞 +1 (555) 123-4567</p>
+            <p>📧 info@hotelreservation.com</p>
+            <p>📍 123 Luxury Street, Premium City, PC 12345</p>
+        </div>
+
+        <div class="footer-section">
+            <h3>Follow Us</h3>
+            <ul>
+                <li><a href="#">Facebook</a></li>
+                <li><a href="#">Instagram</a></li>
+                <li><a href="#">Twitter</a></li>
+                <li><a href="#">LinkedIn</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2024 Hotel Reservation System. All rights reserved.</p>
+    </div>
+</footer>
+
+<div id="deactivateModal" class="custom-modal-overlay">
+    <div class="custom-modal">
+        <div class="custom-modal-icon">⚠️</div>
+
+        <h2>Deactivate Room</h2>
+
+        <p id="deactivateModalText">
+            Are you sure you want to deactivate this room?
+        </p>
+
+        <p class="custom-modal-warning">
+            This room will no longer be available for booking.
+        </p>
+
+        <div class="custom-modal-actions">
+            <button type="button" id="cancelDeactivate" class="btn btn-secondary">
+                Cancel
+            </button>
+
+            <button type="button" id="confirmDeactivate" class="btn btn-danger">
+                Deactivate
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedDeactivateForm = null;
+
+    function openDeactivateModal(button, roomNumber) {
+        selectedDeactivateForm = button.closest('form');
+
+        const modal = document.getElementById('deactivateModal');
+        const modalText = document.getElementById('deactivateModalText');
+
+        modalText.textContent = 'Are you sure you want to deactivate Room ' + roomNumber + '?';
+        modal.classList.add('show');
+    }
+
+    function closeDeactivateModal() {
+        const modal = document.getElementById('deactivateModal');
+        modal.classList.remove('show');
+        selectedDeactivateForm = null;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const confirmButton = document.getElementById('confirmDeactivate');
+        const cancelButton = document.getElementById('cancelDeactivate');
+        const modal = document.getElementById('deactivateModal');
+
+        confirmButton.addEventListener('click', function () {
+            if (selectedDeactivateForm) {
+                selectedDeactivateForm.submit();
+            }
+        });
+
+        cancelButton.addEventListener('click', closeDeactivateModal);
+
+        modal.addEventListener('click', function (event) {
+            if (event.target === modal) {
+                closeDeactivateModal();
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeDeactivateModal();
+            }
+        });
+    });
+</script>
 </body>
 </html>
-
