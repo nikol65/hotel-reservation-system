@@ -21,14 +21,21 @@ public class AdminRoomController {
 
     @GetMapping
     public ModelAndView adminRooms(HttpSession session) {
+
         if (session.getAttribute("userId") == null) {
             return new ModelAndView("redirect:/login");
         }
+
         if (!isAdmin(session)) {
             return new ModelAndView("redirect:/home");
         }
+
         ModelAndView modelAndView = new ModelAndView("admin-rooms");
         modelAndView.addObject("rooms", roomService.findAllRooms());
+        modelAndView.addObject("totalRooms", roomService.getTotalRoomsCount());
+        modelAndView.addObject("availableRooms", roomService.getAvailableRoomsCount());
+        modelAndView.addObject("inactiveRooms", roomService.getInactiveRoomsCount());
+        modelAndView.addObject("averageRoomPrice", roomService.getAverageRoomPrice());
         return modelAndView;
     }
 

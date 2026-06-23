@@ -72,6 +72,44 @@
                 <p>Manage all hotel rooms, edit details, and control availability.</p>
             </div>
 
+            <div class="admin-stats-grid">
+
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">🏨</div>
+                    <div>
+                        <p>Total Rooms</p>
+                        <h3 th:text="${totalRooms}">0</h3>
+                    </div>
+                </div>
+
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">🟢</div>
+                    <div>
+                        <p>Available</p>
+                        <h3 th:text="${availableRooms}">0</h3>
+                    </div>
+                </div>
+
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">⚫</div>
+                    <div>
+                        <p>Inactive</p>
+                        <h3 th:text="${inactiveRooms}">0</h3>
+                    </div>
+                </div>
+
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">💲</div>
+                    <div>
+                        <p>Average Price</p>
+                        <h3>
+                            $<span th:text="${#numbers.formatDecimal(averageRoomPrice,1,2)}">0.00</span>
+                        </h3>
+                    </div>
+                </div>
+
+            </div>
+
             <div th:if="${successMessage}" class="alert alert-success">
                 <p th:text="${successMessage}"></p>
             </div>

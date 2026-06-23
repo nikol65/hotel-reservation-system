@@ -55,10 +55,7 @@ public class RoomService {
         Room updatedRoom = roomRepository.save(room);
         return RoomMapper.toRoomDto(updatedRoom);
     }
-    public List<RoomDto> findFilteredRooms(RoomType roomType,
-                                           BigDecimal maxPrice,
-                                           Integer minCapacity) {
-
+    public List<RoomDto> findFilteredRooms(RoomType roomType, BigDecimal maxPrice, Integer minCapacity) {
         return findAllRooms()
                 .stream()
                 .filter(room -> room.getRoomStatus() == RoomStatus.AVAILABLE)
@@ -66,5 +63,31 @@ public class RoomService {
                 .filter(room -> maxPrice == null || room.getPricePerNight().compareTo(maxPrice) <= 0)
                 .filter(room -> minCapacity == null || room.getCapacity() >= minCapacity)
                 .toList();
+    }
+    public long getTotalRoomsCount() {
+        return roomRepository.count();
+    }
+
+    public long getAvailableRoomsCount() {
+        return roomRepository.findAll()
+                .stream()
+                .filter(room -> room.getRoomStatus() == RoomStatus.AVAILABLE)
+                .count();
+    }
+
+    public long getInactiveRoomsCount() {
+        return roomRepository.findAll()
+                .stream()
+                .filter(room -> room.getRoomStatus() == RoomStatus.INACTIVE)
+                .count();
+    }
+
+    public double getAverageRoomPrice() {
+        return roomRepository.findAll()
+                .stream()
+                .map(Room::getPricePerNight)
+                .mapToDouble(BigDecimal::doubleValue)
+                .average()
+                .orElse(0);
     }
 }

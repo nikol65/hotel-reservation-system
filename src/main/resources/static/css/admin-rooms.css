@@ -79,3 +79,45 @@
         opacity: 1;
     }
 }
+
+/* ===========================
+   Admin Statistics Dashboard
+=========================== */
+
+.admin-stats-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:1rem;
+    margin:1.5rem 0 2rem;
+}
+
+.admin-stat-card{
+    background:#fff;
+    border-radius:12px;
+    padding:1.3rem;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    transition:.25s;
+}
+
+.admin-stat-card:hover{
+    transform:translateY(-4px);
+}
+
+.admin-stat-icon{
+    font-size:2.2rem;
+}
+
+.admin-stat-card p{
+    margin:0;
+    color:#777;
+    font-size:.9rem;
+}
+
+.admin-stat-card h3{
+    margin-top:.35rem;
+    font-size:1.8rem;
+    color:var(--primary-color);
+}
