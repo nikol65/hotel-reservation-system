@@ -179,8 +179,8 @@ Example:
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/hotel_reservation_system
-spring.datasource.username=root
-spring.datasource.password=Root@0447
+spring.datasource.username=YOUR_USERNAME
+spring.datasource.password=YOUR_PASSWORD
 ```
 
 Run the application:
